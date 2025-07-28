@@ -15,7 +15,7 @@ export default function Home() {
       <div className="min-h-screen bg-gradient-to-br from-purple-900 to-yellow-300 text-white font-sans">
         <header className="w-full py-8 bg-white shadow-sm">
           <div className="max-w-5xl mx-auto px-6 text-center">
-            <h1 className="text-5xl font-extrabold text-indigo-800 tracking-tight">
+            <h1 className="text-4xl font-extrabold mb-4">Welcome to MYMGG 👋</h1>
               MYMGG
             </h1>
             <p className="mt-2 text-lg text-gray-600 italic">
