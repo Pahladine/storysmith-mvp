@@ -12,7 +12,7 @@ export default function Home() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <div className="min-h-screen bg-gradient-to-br from-indigo-100 to-blue-50 text-gray-800 font-sans">
+      <div className="min-h-screen bg-gradient-to-br from-purple-900 to-yellow-300 text-white font-sans">
         <header className="w-full py-8 bg-white shadow-sm">
           <div className="max-w-5xl mx-auto px-6 text-center">
             <h1 className="text-5xl font-extrabold text-indigo-800 tracking-tight">
