@@ -5,11 +5,17 @@ export default function Home() {
       <p className="text-lg mb-8 max-w-xl text-center">
         MYMGG is the home of StorySmith—your AI‑powered storybook builder. Coming Soon!
       </p>
-      <div className="w-full max-w-md">
+      <div className="w-full max-w-2xl rounded-xl overflow-hidden border border-gray-200 shadow-md">
         <iframe
-          src="https://docs.google.com/forms/d/e/1UhX9wiepKyAdzwl2TPY4Kik-BkUzJ2Kz7J-w7IZq7t8/viewform?embedded=true"
-          width="100%" height="500" frameBorder="0" marginHeight="0" marginWidth="0"
-        >Loading…</iframe>
+          src="https://docs.google.com/forms/d/e/1FAIpQLSd420clo-i4bHuKN3h2l90TQgRiQC8n6UBKAC_9QLPSBN5knw/viewform?embedded=true"
+          width="100%"
+          height="700"
+          frameBorder="0"
+          marginHeight="0"
+          marginWidth="0"
+        >
+          Loading…
+        </iframe>
       </div>
     </main>
   );
