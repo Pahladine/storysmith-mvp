@@ -15,9 +15,8 @@ export default function Home() {
       <div className="min-h-screen bg-gradient-to-br from-purple-900 to-yellow-300 text-white font-sans">
         <header className="w-full py-8 bg-white shadow-sm">
           <div className="max-w-5xl mx-auto px-6 text-center">
-            <h1 className="text-4xl font-extrabold mb-4">🚨 TEST: Redeploy Check 🚨</h1>
-              MYMGG
-            </h1>
+         <h1 className="text-4xl font-extrabold mb-4">🚨 TEST: Redeploy Check 🚨</h1>
+	 <h2 className="text-2xl font-semibold">MYMGG</h2>
             <p className="mt-2 text-lg text-gray-600 italic">
               The home of <span className="font-semibold text-indigo-700">StorySmith</span> —
               your AI-powered storybook builder.
