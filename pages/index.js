@@ -78,15 +78,40 @@ export default function Home() {
     }
   }
 
-  const handleSignUpSubmit = (e) => {
+const handleSignUpSubmit = async (e) => {
     e.preventDefault();
-    if (email) {
-      alert(`Thank you! ${email} has been added to our notification list.`);
-      setEmail(''); // Clear the input field
+    if (email && email.includes('@')) {
+      try {
+        // You need to replace this URL with your actual Kit.com form action URL.
+        const kitFormUrl = 'YOUR_KIT_FORM_URL_HERE';
+
+        // The form data is sent as a key-value pair.
+        // The key should match the name of the input field in your Kit.com form.
+        // It's often 'email' or 'fields[email]'. You must verify this.
+        const formData = new FormData();
+        formData.append('email', email); 
+
+        const res = await fetch(kitFormUrl, {
+          method: 'POST',
+          body: formData,
+        });
+
+        // Check if the submission was successful
+        if (res.ok) {
+          alert(`Thank you! ${email} has been added to our notification list.`);
+          setEmail(''); // Clear the input field
+        } else {
+          alert('Failed to subscribe. Please try again.');
+        }
+
+      } catch (error) {
+        console.error("Subscription failed:", error);
+        alert("Something went wrong. Please try again.");
+      }
     } else {
       alert("Please enter a valid email address.");
     }
-  };
+};
 
   const generateImageSimulated = async (prompt, type = 'scene') => {
     setIsImageLoading(true);
@@ -298,16 +323,8 @@ const renderLandingPage = () => {
             </p>
             
              {/* … your hero copy above … */}
-     {/* NEW: Sign-up Form */}
-{/* ConvertKit embed */}
+     
            <div className="mt-8 flex justify-center">
-             <div id="ck_form_container" className="w-full max-w-md"></div>
-             <Script
-               id="convertkit-form"
-               strategy="afterInteractive"
-               data-uid="11ec880b70"
-               src="https://storysmith-mymgg.kit.com/11ec880b70/index.js"
-             />
            </div>
      
         {/* The promo video that plays on top */}
@@ -326,17 +343,22 @@ const renderLandingPage = () => {
           Your browser does not support the video tag.
         </video>
 
-        {/* NEW: Hidden Admin Button */}
-        <button
-          onClick={() => setShowLandingPage(false)}
-          className="absolute bottom-5 right-5 bg-black bg-opacity-50 text-white text-xs px-2 py-1 rounded opacity-50 hover:opacity-100 transition-opacity z-20"
-        >
-          Admin
-        </button>
-      </div>
-    );
-  };
-
+         {/* NEW: Hidden Admin Button */}
+         <button …>Admin</button>
+       </div>        {/* closes the inner absolute container */}
+     </div>          {/* closes the outer relative container */}
+   );                {/* closes the return(…) */}
+ };                  {/* end renderLandingPage */}
+         <button
+           onClick={() => setShowLandingPage(false)}
+           className="absolute bottom-5 right-5 bg-black bg-opacity-50 text-white text-xs px-2 py-1 rounded opacity-50 hover:opacity-100 transition-opacity z-20"
+         >
+           Admin
+         </button>
+       </div>        {/* closes the absolute-positioned inner div */}
+     </div>          {/* closes the relative-positioned outer div */}
+   );                {/* closes the return( ... ) */}
+ };                
   const renderForgeHeroContent = () => {
     switch (currentForgeHeroStep) {
       case 0:
