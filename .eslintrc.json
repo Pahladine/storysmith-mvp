@@ -1,7 +1,6 @@
 {
-  "extends": "next/core-web-vitals",
+  "extends": ["next/core-web-vitals"],
   "rules": {
-    // disable errors on unescaped ' and "
     "react/no-unescaped-entities": "off"
   }
 }
