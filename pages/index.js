@@ -292,11 +292,30 @@ const renderLandingPage = () => {
       setIsVideoFinished(true);
     };
 
-    const handleSignUpSubmit = (e) => {
+    const handleSignUpSubmit = async (e) => {
       e.preventDefault();
       if (email && email.includes('@')) {
-        alert(`Thank you! ${email} has been added to our notification list.`);
-        setEmail(''); // Clear the input field
+        try {
+          const kitFormUrl = 'YOUR_KIT_FORM_URL_HERE';
+          const formData = new FormData();
+          formData.append('email', email);
+
+          const res = await fetch(kitFormUrl, {
+            method: 'POST',
+            body: formData,
+          });
+
+          if (res.ok) {
+            alert(`Thank you! ${email} has been added to our notification list.`);
+            setEmail('');
+          } else {
+            alert('Failed to subscribe. Please try again.');
+          }
+
+        } catch (error) {
+          console.error("Subscription failed:", error);
+          alert("Something went wrong. Please try again.");
+        }
       } else {
         alert("Please enter a valid email address.");
       }
@@ -305,9 +324,9 @@ const renderLandingPage = () => {
     return (
       <div className="relative h-screen w-screen bg-black">
         {/* The main content area */}
-        <div 
+        <div
           className="absolute inset-0 transition-opacity duration-1000 ease-in-out"
-          style={{ 
+          style={{
             backgroundImage: `url('/background.jpg')`,
             backgroundSize: 'cover',
             backgroundPosition: 'center',
@@ -321,49 +340,50 @@ const renderLandingPage = () => {
             <p className="text-xl md:text-2xl mb-8 max-w-3xl" style={{ fontFamily: 'Lato, sans-serif', color: '#EAE0D5' }}>
               A new era of storytelling is coming soon. Sign up to be notified when we launch.
             </p>
-            
-             {/* … your hero copy above … */}
-     
-           <div className="mt-8 flex justify-center">
-           </div>
-     
+            <form onSubmit={handleSignUpSubmit} className="flex flex-col sm:flex-row items-center w-full max-w-lg space-y-4 sm:space-y-0 sm:space-x-4">
+              <input
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="Enter your email address"
+                className="flex-1 p-3 rounded-lg text-gray-800 bg-white border border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              />
+              <button
+                type="submit"
+                className="px-6 py-3 bg-indigo-600 text-white font-bold rounded-lg shadow-md hover:bg-indigo-700 transition duration-300"
+              >
+                Notify Me!
+              </button>
+            </form>
+          </div>
+        </div>
+
         {/* The promo video that plays on top */}
         <video
           className="absolute inset-0 w-full h-full object-cover transition-opacity duration-500 ease-out"
-          style={{ 
+          style={{
             opacity: isVideoFinished ? 0 : 1,
-            pointerEvents: isVideoFinished ? 'none' : 'auto' // Fixes the button click issue
+            pointerEvents: isVideoFinished ? 'none' : 'auto'
           }}
           autoPlay
           muted
           playsInline
           onEnded={handleVideoEnd}
-          src="/promo.mp4" 
+          src="/promo.mp4"
         >
           Your browser does not support the video tag.
         </video>
 
-         {/* NEW: Hidden Admin Button */}
-<button
-  onClick={() => setShowLandingPage(false)}
-  className="absolute bottom-5 right-5 bg-black bg-opacity-50 text-white text-xs px-2 py-1 rounded opacity-50 hover:opacity-100 transition-opacity z-20"
->
-  Admin
-</button>
-       </div>        {/* closes the inner absolute container */}
-     </div>          {/* closes the outer relative container */}
-   );                {/* closes the return(…) */}
-
-         <button
-           onClick={() => setShowLandingPage(false)}
-           className="absolute bottom-5 right-5 bg-black bg-opacity-50 text-white text-xs px-2 py-1 rounded opacity-50 hover:opacity-100 transition-opacity z-20"
-         >
-           Admin
-         </button>
-       </div>        {/* closes the absolute-positioned inner div */}
-     </div>          {/* closes the relative-positioned outer div */}
-   );                {/* closes the return( ... ) */}
- };                
+        {/* NEW: Hidden Admin Button */}
+        <button
+          onClick={() => setShowLandingPage(false)}
+          className="absolute bottom-5 right-5 bg-black bg-opacity-50 text-white text-xs px-2 py-1 rounded opacity-50 hover:opacity-100 transition-opacity z-20"
+        >
+          Admin
+        </button>
+      </div>
+    );
+};
   const renderForgeHeroContent = () => {
     switch (currentForgeHeroStep) {
       case 0:
