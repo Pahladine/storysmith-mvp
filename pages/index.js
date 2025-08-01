@@ -1,14 +1,13 @@
 import Script from 'next/script';
-import { useState, useEffect } from 'react'
-import Head from 'next/head'
+import { useState, useEffect } from 'react';
+import Head from 'next/head';
 
 export default function Home() {
   // --- STATE MANAGEMENT ---
   const [email, setEmail] = useState('');
-  const [showLandingPage, setShowLandingPage] = useState(true); // NEW: Controls the landing page visibility
-  const [activeTab, setActiveTab] = useState(0)
+  const [showLandingPage, setShowLandingPage] = useState(true);
+  const [activeTab, setActiveTab] = useState(0);
   const [isVideoFinished, setIsVideoFinished] = useState(false);
-
   const [storyState, setStoryState] = useState({
     metadata: {},
     user_info: {},
@@ -29,8 +28,8 @@ export default function Home() {
       },
       Cover: {}
     }
-  })
-  const [response, setResponse] = useState('')
+  });
+  const [response, setResponse] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [isImageLoading, setIsImageLoading] = useState(false);
   const [heroImageUrl, setHeroImageUrl] = useState('');
@@ -51,9 +50,9 @@ export default function Home() {
 
   const tabs = [
     { label: 'Forge Hero', endpoint: 'forge-hero' },
-    { label: 'Spin Tale',  endpoint: 'scene-weaver' },
-    { label: 'Bind Book',  endpoint: 'bind-book' },
-  ]
+    { label: 'Spin Tale', endpoint: 'scene-weaver' },
+    { label: 'Bind Book', endpoint: 'bind-book' },
+  ];
 
   // --- API & SIMULATION FUNCTIONS ---
   const handleApiCall = async (endpoint, args) => {
@@ -64,9 +63,9 @@ export default function Home() {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(args),
-      })
-      const data = await res.json()
-      setResponse(data.reply || 'No reply')
+      });
+      const data = await res.json();
+      setResponse(data.reply || 'No reply');
       if (data.storyState && Object.keys(data.storyState).length > 0) {
         setStoryState(prev => ({ ...prev, ...data.storyState }));
       }
@@ -76,34 +75,24 @@ export default function Home() {
     } finally {
       setIsLoading(false);
     }
-  }
+  };
 
-const handleSignUpSubmit = async (e) => {
+  const handleSignUpSubmit = async (e) => {
     e.preventDefault();
     if (email && email.includes('@')) {
       try {
-        // You need to replace this URL with your actual Kit.com form action URL.
-        const beehiivFormUrl = 'https://adams-newsletter-95d074.beehiiv.com/subscribe';
-
-        // The form data is sent as a key-value pair.
-        // The key should match the name of the input field in your Kit.com form.
-        // It's often 'email' or 'fields[email]'. You must verify this.
-        const formData = new FormData();
-        formData.append('email', email);
-
-        const res = await fetch(beehiivFormUrl, {
+        const res = await fetch('/api/subscribe', {
           method: 'POST',
-          body: formData,
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email }),
         });
-
-        // Check if the submission was successful
+        const data = await res.json();
         if (res.ok) {
-          alert(`Thank you! ${email} has been added to our notification list.`);
-          setEmail(''); // Clear the input field
+          alert(data.message);
+          setEmail('');
         } else {
-          alert('Failed to subscribe. Please try again.');
+          alert(data.message || 'Failed to subscribe. Please try again.');
         }
-
       } catch (error) {
         console.error("Subscription failed:", error);
         alert("Something went wrong. Please try again.");
@@ -111,12 +100,11 @@ const handleSignUpSubmit = async (e) => {
     } else {
       alert("Please enter a valid email address.");
     }
-};
+  };
 
   const generateImageSimulated = async (prompt, type = 'scene') => {
     setIsImageLoading(true);
     await new Promise(resolve => setTimeout(resolve, 2000));
-    // FIX: Add a fallback for undefined or null prompts to prevent crash
     const safePrompt = prompt || `A beautiful ${type} illustration`;
     const placeholderText = encodeURIComponent(safePrompt.substring(0, 20) + '...');
     let imageUrl;
@@ -193,11 +181,11 @@ const handleSignUpSubmit = async (e) => {
       sceneTitle = "The Grand Return";
       sceneText = `Scene ${sceneNum}: The Grand Return. After their arduous journey, ${heroName}, emerges from the final challenge, triumphant. The weight of their quest lifts, replaced by a profound sense of accomplishment. The sound of distant cheers reaches their ears, warm and inviting. A gentle breeze carries the sweet scent of home.`;
     } else if (sceneNum === 2 && totalScenes > 3) {
-        sceneTitle = "The First Obstacle";
-        sceneText = `Scene 2: The First Obstacle. Following the mysterious light, ${heroName}, stumbles upon a gnarled, ancient tree whose branches twist like arms. A grumpy, moss-covered troll blocks their path, demanding a riddle be solved. The air grows heavy with the troll's gruff voice, and the rough bark of the tree feels cold against their hand as they lean in to listen.`;
+      sceneTitle = "The First Obstacle";
+      sceneText = `Scene 2: The First Obstacle. Following the mysterious light, ${heroName}, stumbles upon a gnarled, ancient tree whose branches twist like arms. A grumpy, moss-covered troll blocks their path, demanding a riddle be solved. The air grows heavy with the troll's gruff voice, and the rough bark of the tree feels cold against their hand as they lean in to listen.`;
     } else if (sceneNum === 3 && totalScenes > 5) {
-        sceneTitle = "A Moment of Reflection";
-        sceneText = `Scene 3: A Moment of Reflection. After narrowly escaping the troll, ${heroName}, finds a quiet clearing bathed in moonlight. They sit by a babbling brook, its gentle gurgle a soothing sound. The cool, smooth stones of the bank offer a brief respite, and the sweet scent of night-blooming jasmine fills the air as they ponder their next move.`;
+      sceneTitle = "A Moment of Reflection";
+      sceneText = `Scene 3: A Moment of Reflection. After narrowly escaping the troll, ${heroName}, finds a quiet clearing bathed in moonlight. They sit by a babbling brook, its gentle gurgle a soothing sound. The cool, smooth stones of the bank offer a brief respite, and the sweet scent of night-blooming jasmine fills the air as they ponder their next move.`;
     } else {
       sceneTitle = `Scene ${sceneNum}: A New Challenge`;
       sceneText = `Scene ${sceneNum}: A New Challenge. The journey continues for ${heroName}. They venture deeper into the unknown, facing unexpected twists and turns. The sounds of the wilderness surround them, and the ground beneath their feet changes with every step.`;
@@ -287,42 +275,10 @@ const handleSignUpSubmit = async (e) => {
   }, [activeTab, currentBindBookStep, isLoading, isImageLoading, storyState]);
 
   // --- RENDER LOGIC ---
-const renderLandingPage = () => {
+  const renderLandingPage = () => {
     const handleVideoEnd = () => {
       setIsVideoFinished(true);
     };
-
-const handleSignUpSubmit = async (e) => {
-    e.preventDefault();
-    if (email && email.includes('@')) {
-      try {
-        const kitFormUrl = 'https://app.kit.com/forms/8384288/subscriptions';
-        const formData = new FormData();
-        formData.append('email_address', email);
-
-        // Add a field to match the data-uid from the form HTML
-
-        const res = await fetch(kitFormUrl, {
-          method: 'POST',
-          // Use no-cors mode to prevent a strict CORS policy from blocking the request.
-          // Note: This means you won't be able to read the response from the fetch call.
-
-          body: formData,
-        });
-
-        // The 'no-cors' mode means res.ok will always be true, but the request might still fail.
-        // We'll assume success and let the user know, as the server will handle the actual subscription.
-        alert(`Thank you for subscribing! Please check your email to confirm.`);
-        setEmail(''); // Clear the input field
-
-      } catch (error) {
-        console.error("Subscription failed:", error);
-        alert("Something went wrong. Please try again.");
-      }
-    } else {
-      alert("Please enter a valid email address.");
-    }
-};
 
     return (
       <div className="relative h-screen w-screen bg-black">
@@ -360,7 +316,6 @@ const handleSignUpSubmit = async (e) => {
             </form>
           </div>
         </div>
-
         {/* The promo video that plays on top */}
         <video
           className="absolute inset-0 w-full h-full object-cover transition-opacity duration-500 ease-out"
@@ -376,7 +331,6 @@ const handleSignUpSubmit = async (e) => {
         >
           Your browser does not support the video tag.
         </video>
-
         {/* NEW: Hidden Admin Button */}
         <button
           onClick={() => setShowLandingPage(false)}
@@ -386,7 +340,7 @@ const handleSignUpSubmit = async (e) => {
         </button>
       </div>
     );
-};
+  };
   const renderForgeHeroContent = () => {
     switch (currentForgeHeroStep) {
       case 0:
@@ -558,7 +512,7 @@ const handleSignUpSubmit = async (e) => {
         }
         return (
           <div className="space-y-4">
-            <div className="max-h-60 overflow-y-auto pr-2 mb-4 custom-scrollbar">
+            <div className="max-h-60 overflow-y-auto pr-2 custom-scrollbar">
               {storyState.story_content.SceneJSON_array.slice(0, currentSceneIndex).map((scene, idx) => (
                 <div key={scene.scene_id || `prev-scene-${idx}`} className="bg-gray-800 rounded-lg p-4 mb-4 border border-gray-600 opacity-75">
                   <h4 className="text-lg font-semibold text-gray-300 mb-2">{scene.scene_title}</h4>
