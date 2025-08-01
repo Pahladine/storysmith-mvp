@@ -292,34 +292,38 @@ const renderLandingPage = () => {
       setIsVideoFinished(true);
     };
 
-    const handleSignUpSubmit = async (e) => {
-      e.preventDefault();
-      if (email && email.includes('@')) {
-        try {
-          const kitFormUrl = 'YOUR_KIT_FORM_URL_HERE';
-          const formData = new FormData();
-          formData.append('email', email);
+const handleSignUpSubmit = async (e) => {
+    e.preventDefault();
+    if (email && email.includes('@')) {
+      try {
+        const kitFormUrl = 'https://app.kit.com/forms/8384288/subscriptions';
+        const formData = new FormData();
+        formData.append('email_address', email);
 
-          const res = await fetch(kitFormUrl, {
-            method: 'POST',
-            body: formData,
-          });
+        // Add a field to match the data-uid from the form HTML
+        formData.append('form_uid', '11ec880b70');
 
-          if (res.ok) {
-            alert(`Thank you! ${email} has been added to our notification list.`);
-            setEmail('');
-          } else {
-            alert('Failed to subscribe. Please try again.');
-          }
+        const res = await fetch(kitFormUrl, {
+          method: 'POST',
+          // Use no-cors mode to prevent a strict CORS policy from blocking the request.
+          // Note: This means you won't be able to read the response from the fetch call.
+          mode: 'no-cors',
+          body: formData,
+        });
 
-        } catch (error) {
-          console.error("Subscription failed:", error);
-          alert("Something went wrong. Please try again.");
-        }
-      } else {
-        alert("Please enter a valid email address.");
+        // The 'no-cors' mode means res.ok will always be true, but the request might still fail.
+        // We'll assume success and let the user know, as the server will handle the actual subscription.
+        alert(`Thank you! Please check your email to confirm your subscription.`);
+        setEmail(''); // Clear the input field
+
+      } catch (error) {
+        console.error("Subscription failed:", error);
+        alert("Something went wrong. Please try again.");
       }
-    };
+    } else {
+      alert("Please enter a valid email address.");
+    }
+};
 
     return (
       <div className="relative h-screen w-screen bg-black">
