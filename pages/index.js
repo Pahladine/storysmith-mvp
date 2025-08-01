@@ -299,18 +299,18 @@ const renderLandingPage = () => {
             
              {/* … your hero copy above … */}
      {/* NEW: Sign-up Form */}
-     {/* ConvertKit embed */}
-<div id="ck_form_container"></div>
-<Script
-  id="convertkit-form"
-  strategy="afterInteractive"
-  data-uid="11ec880b70"
-  src="https://storysmith-mymgg.kit.com/11ec880b70/index.js"
-/>
-
+{/* ConvertKit embed */}
+           <div className="mt-8 flex justify-center">
+             <div id="ck_form_container" className="w-full max-w-md"></div>
+             <Script
+               id="convertkit-form"
+               strategy="afterInteractive"
+               data-uid="11ec880b70"
+               src="https://storysmith-mymgg.kit.com/11ec880b70/index.js"
+             />
+           </div>
           </div>
-        </div>
-
+     
         {/* The promo video that plays on top */}
         <video
           className="absolute inset-0 w-full h-full object-cover transition-opacity duration-500 ease-out"
