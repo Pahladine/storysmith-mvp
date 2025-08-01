@@ -320,7 +320,7 @@ export default function Home() {
         </div>
         {/* The promo video that plays on top */}
         <video
-          className="absolute inset-0 w-full h-full object-cover transition-opacity duration-500 ease-out"
+          className="absolute inset-0 w-full h-full object-contain transition-opacity duration-500 ease-out"
           style={{
             opacity: isVideoFinished ? 0 : 1,
             pointerEvents: isVideoFinished ? 'none' : 'auto'
