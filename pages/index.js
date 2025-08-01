@@ -353,7 +353,7 @@ const renderLandingPage = () => {
        </div>        {/* closes the inner absolute container */}
      </div>          {/* closes the outer relative container */}
    );                {/* closes the return(…) */}
- };                  {/* end renderLandingPage */}
+
          <button
            onClick={() => setShowLandingPage(false)}
            className="absolute bottom-5 right-5 bg-black bg-opacity-50 text-white text-xs px-2 py-1 rounded opacity-50 hover:opacity-100 transition-opacity z-20"
