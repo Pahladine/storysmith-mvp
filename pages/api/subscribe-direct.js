@@ -1,5 +1,4 @@
-import fs from 'fs';
-import path from 'path';
+import fetch from 'node-fetch';
 
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
@@ -12,25 +11,30 @@ export default async function handler(req, res) {
     return res.status(400).json({ message: 'A valid email is required.' });
   }
 
-  const filePath = path.join(process.cwd(), 'data', 'subscribers.json');
+  const sheetDbUrl = 'https://sheetdb.io/api/v1/7wb83q966x1q2';
 
   try {
-    const fileContents = fs.readFileSync(filePath, 'utf-8');
-    const subscribers = JSON.parse(fileContents);
+    const sheetDbResponse = await fetch(sheetDbUrl, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        data: [{
+          email: email,
+          subscribedAt: new Date().toISOString()
+        }]
+      }),
+    });
 
-    // Check if the email already exists to avoid duplicates
-    if (subscribers.some(sub => sub.email === email)) {
-      return res.status(409).json({ message: 'Email already subscribed.' });
+    if (sheetDbResponse.ok) {
+      return res.status(200).json({ message: 'Successfully subscribed!' });
+    } else {
+      console.error(`SheetDB subscription failed with status: ${sheetDbResponse.status}`);
+      return res.status(500).json({ message: 'Failed to subscribe with SheetDB.' });
     }
-
-    // Add the new email with a timestamp
-    subscribers.push({ email, subscribedAt: new Date().toISOString() });
-
-    fs.writeFileSync(filePath, JSON.stringify(subscribers, null, 2));
-
-    return res.status(200).json({ message: 'Successfully subscribed!' });
   } catch (error) {
-    console.error('File system error:', error);
+    console.error('Serverless function error:', error);
     return res.status(500).json({ message: 'Server error during subscription.' });
   }
 }
