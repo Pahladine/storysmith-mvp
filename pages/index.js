@@ -295,19 +295,19 @@ export default function Home() {
           }}
         >
           <div className="flex flex-col items-center justify-center h-full text-center text-white p-4 bg-black bg-opacity-40">
-            <h1 className="text-6xl md:text-7xl font-extrabold mb-4" style={{ fontFamily: 'Cinzel, serif', color: '#F5F0E8' }}>
+            <h1 className="text-4xl sm:text-5xl md:text-7xl font-extrabold mb-4" style={{ fontFamily: 'Cinzel, serif', color: '#F5F0E8' }}>
               Your Imagination, Instantly Illustrated.
             </h1>
             <p className="text-xl md:text-2xl mb-8 max-w-3xl" style={{ fontFamily: 'Lato, sans-serif', color: '#EAE0D5' }}>
               A new era of storytelling is coming soon. Sign up to be notified when we launch.
             </p>
-            <form onSubmit={handleSignUpSubmit} className="flex flex-col sm:flex-row items-center w-full max-w-lg space-y-4 sm:space-y-0 sm:space-x-4">
+            <form onSubmit={handleSignUpSubmit} className="flex flex-col sm:flex-row items-center w-full max-w-lg space-y-4 sm:space-y-0 sm:space-x-4 px-4 sm:px-0">
               <input
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="Enter your email address"
-                className="flex-1 p-3 rounded-lg text-gray-800 bg-white border border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+               className="flex-1 p-2 sm:p-3 rounded-lg text-gray-800 bg-white border border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500"
               />
               <button
                 type="submit"
