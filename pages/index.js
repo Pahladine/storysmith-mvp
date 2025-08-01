@@ -83,13 +83,13 @@ const handleSignUpSubmit = async (e) => {
     if (email && email.includes('@')) {
       try {
         // You need to replace this URL with your actual Kit.com form action URL.
-        const kitFormUrl = 'YOUR_KIT_FORM_URL_HERE';
+        const kitFormUrl = 'https://app.kit.com/forms/8384288/subscriptions';
 
         // The form data is sent as a key-value pair.
         // The key should match the name of the input field in your Kit.com form.
         // It's often 'email' or 'fields[email]'. You must verify this.
         const formData = new FormData();
-        formData.append('email', email); 
+        formData.append('email_address', email);
 
         const res = await fetch(kitFormUrl, {
           method: 'POST',
