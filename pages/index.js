@@ -309,7 +309,6 @@ const renderLandingPage = () => {
                src="https://storysmith-mymgg.kit.com/11ec880b70/index.js"
              />
            </div>
-          </div>
      
         {/* The promo video that plays on top */}
         <video
