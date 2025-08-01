@@ -83,15 +83,15 @@ const handleSignUpSubmit = async (e) => {
     if (email && email.includes('@')) {
       try {
         // You need to replace this URL with your actual Kit.com form action URL.
-        const kitFormUrl = 'https://app.kit.com/forms/8384288/subscriptions';
+        const beehiivFormUrl = 'https://adams-newsletter-95d074.beehiiv.com/subscribe';
 
         // The form data is sent as a key-value pair.
         // The key should match the name of the input field in your Kit.com form.
         // It's often 'email' or 'fields[email]'. You must verify this.
         const formData = new FormData();
-        formData.append('email_address', email);
+        formData.append('email', email);
 
-        const res = await fetch(kitFormUrl, {
+        const res = await fetch(beehiivFormUrl, {
           method: 'POST',
           body: formData,
         });
@@ -301,19 +301,18 @@ const handleSignUpSubmit = async (e) => {
         formData.append('email_address', email);
 
         // Add a field to match the data-uid from the form HTML
-        formData.append('form_uid', '11ec880b70');
 
         const res = await fetch(kitFormUrl, {
           method: 'POST',
           // Use no-cors mode to prevent a strict CORS policy from blocking the request.
           // Note: This means you won't be able to read the response from the fetch call.
-          mode: 'no-cors',
+
           body: formData,
         });
 
         // The 'no-cors' mode means res.ok will always be true, but the request might still fail.
         // We'll assume success and let the user know, as the server will handle the actual subscription.
-        alert(`Thank you! Please check your email to confirm your subscription.`);
+        alert(`Thank you for subscribing! Please check your email to confirm.`);
         setEmail(''); // Clear the input field
 
       } catch (error) {
