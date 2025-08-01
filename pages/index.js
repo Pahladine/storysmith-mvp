@@ -1,3 +1,4 @@
+import Script from 'next/script';
 import { useState, useEffect } from 'react'
 import Head from 'next/head'
 
@@ -298,26 +299,14 @@ const renderLandingPage = () => {
             
              {/* … your hero copy above … */}
      {/* NEW: Sign-up Form */}
-     <form onSubmit={handleSignUpSubmit} className="flex …">
-       <input
-         type="email"
-         value={email}
-         onChange={(e) => setEmail(e.target.value)}
-         placeholder="Enter your email address"
-         className="…"
-         required
-       />
-       <button type="submit" className="…">
-         Notify Me
-       </button>
-     </form>
      {/* ConvertKit embed */}
-     <div id="ck_form_container"></div>
-     <script
-       async
-       data-uid="11ec880b70"
-       src="https://storysmith-mymgg.kit.com/11ec880b70/index.js"
-     ></script>
+<div id="ck_form_container"></div>
+<Script
+  id="convertkit-form"
+  strategy="afterInteractive"
+  data-uid="11ec880b70"
+  src="https://storysmith-mymgg.kit.com/11ec880b70/index.js"
+/>
 
           </div>
         </div>
