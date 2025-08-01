@@ -78,29 +78,31 @@ export default function Home() {
   };
 
   const handleSignUpSubmit = async (e) => {
-    e.preventDefault();
-    if (email && email.includes('@')) {
-      try {
-        const res = await fetch('/api/subscribe', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ email }),
-        });
-        const data = await res.json();
-        if (res.ok) {
-          alert(data.message);
-          setEmail('');
-        } else {
-          alert(data.message || 'Failed to subscribe. Please try again.');
-        }
-      } catch (error) {
-        console.error("Subscription failed:", error);
-        alert("Something went wrong. Please try again.");
+  e.preventDefault();
+  if (email && email.includes('@')) {
+    try {
+      const res = await fetch('/api/subscribe-direct', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email }),
+      });
+
+      const data = await res.json();
+
+      if (res.ok) {
+        alert(data.message);
+        setEmail('');
+      } else {
+        alert(data.message || 'Failed to subscribe. Please try again.');
       }
-    } else {
-      alert("Please enter a valid email address.");
+    } catch (error) {
+      console.error("Subscription failed:", error);
+      alert("Something went wrong. Please try again.");
     }
-  };
+  } else {
+    alert("Please enter a valid email address.");
+  }
+};
 
   const generateImageSimulated = async (prompt, type = 'scene') => {
     setIsImageLoading(true);
