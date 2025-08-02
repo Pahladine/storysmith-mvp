@@ -1,7 +1,7 @@
 import Script from 'next/script';
 import { useState, useEffect } from 'react';
 import Head from 'next/head';
-import LandingPage from '../components/LandingPage';
+import LandingPage from './components/LandingPage'; // <-- NEW IMPORT
 
 export default function Home() {
   // --- STATE MANAGEMENT ---
@@ -676,3 +676,4 @@ export default function Home() {
   );
 }
 }
+ok. but what code do i change now to work on renderAppInterface? what are the parameters here? and what is renderAppInterface anyway?
