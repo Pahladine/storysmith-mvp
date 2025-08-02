@@ -25,7 +25,7 @@ export default function Home() {
   const [isImageLoading, setIsImageLoading] = useState(false);
   const [showPasswordInput, setShowPasswordInput] = useState(false);
   const [adminPasswordInput, setAdminPasswordInput] = useState('');
-  const password = process.env.NEXT_PUBLIC_ADMIN_PASSWORD || 'your_secret_password';
+  const password = process.env.NEXT_PUBLIC_ADMIN_PASSWORD || '6425';
 
   const tabs = [
     { label: 'Forge Hero' },
