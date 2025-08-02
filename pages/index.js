@@ -1,7 +1,7 @@
 import Script from 'next/script';
 import { useState, useEffect } from 'react';
 import Head from 'next/head';
-import LandingPage from '../components/LandingPage';
+import LandingPage from './components/LandingPage'; // <-- NEW IMPORT
 
 export default function Home() {
   // --- STATE MANAGEMENT ---
@@ -48,6 +48,10 @@ export default function Home() {
   const [storyBlueprint, setStoryBlueprint] = useState({
     beginning: '', middle: '', end: '', numberOfScenes: null,
   });
+  // --- NEW ADMIN STATE ---
+  const [showPasswordInput, setShowPasswordInput] = useState(false);
+  const [adminPasswordInput, setAdminPasswordInput] = useState('');
+  const password = process.env.NEXT_PUBLIC_ADMIN_PASSWORD || 'your_secret_password';
 
   const tabs = [
     { label: 'Forge Hero', endpoint: 'forge-hero' },
@@ -102,6 +106,17 @@ export default function Home() {
       }
     } else {
       alert("Please enter a valid email address.");
+    }
+  };
+
+  const handleAdminLogin = () => {
+    if (adminPasswordInput === password) {
+      setShowLandingPage(false);
+      setShowPasswordInput(false);
+      setAdminPasswordInput('');
+    } else {
+      alert('Incorrect password!');
+      setAdminPasswordInput('');
     }
   };
 
@@ -656,7 +671,9 @@ export default function Home() {
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="true" />
         <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700;900&family=Lato:wght@400;700&display=swap" rel="stylesheet" />
       </Head>
-      {showLandingPage ? <LandingPage email={email} setEmail={setEmail} showLandingPage={showLandingPage} setShowLandingPage={setShowLandingPage} isVideoFinished={isVideoFinished} setIsVideoFinished={setIsVideoFinished} handleSignUpSubmit={handleSignUpSubmit} /> : renderAppInterface()}
+      {showLandingPage ? renderLandingPage() : renderAppInterface()}
     </>
   );
 }
+}
+ok. but what code do i change now to work on renderAppInterface? what are the parameters here? and what is renderAppInterface anyway?
