@@ -675,5 +675,3 @@ export default function Home() {
     </>
   );
 }
-}
-ok. but what code do i change now to work on renderAppInterface? what are the parameters here? and what is renderAppInterface anyway?
