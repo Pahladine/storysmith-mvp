@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 
-export default function LandingPage({ email, setEmail, showLandingPage, setShowLandingPage, isVideoFinished, setIsVideoFinished, handleSignUpSubmit }) {
+export default function LandingPage({ email, setEmail, showLandingPage, setShowLandingPage, isVideoFinished, setIsVideoFinished, handleSignUpSubmit, showPasswordInput, setShowPasswordInput, adminPasswordInput, setAdminPasswordInput, handleAdminLogin }) {
   const handleVideoEnd = () => {
     setIsVideoFinished(true);
   };
@@ -56,13 +56,36 @@ export default function LandingPage({ email, setEmail, showLandingPage, setShowL
       >
         Your browser does not support the video tag.
       </video>
-      {/* NEW: Hidden Admin Button */}
-      <button
-        onClick={() => setShowLandingPage(false)}
-        className="absolute bottom-5 right-5 bg-black bg-opacity-50 text-white text-xs px-2 py-1 rounded opacity-50 hover:opacity-100 transition-opacity z-20"
-      >
-        Admin
-      </button>
+      {/* Admin Button and Password Field */}
+      {showPasswordInput ? (
+        <div className="absolute bottom-5 right-5 flex items-center space-x-2 z-20">
+          <input
+            type="password"
+            value={adminPasswordInput}
+            onChange={(e) => setAdminPasswordInput(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter') {
+                handleAdminLogin();
+              }
+            }}
+            placeholder="Enter password"
+            className="p-1 text-xs rounded bg-black bg-opacity-50 text-white placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+          />
+          <button
+            onClick={handleAdminLogin}
+            className="px-2 py-1 text-xs rounded bg-indigo-600 text-white font-semibold hover:bg-indigo-700 transition-colors"
+          >
+            Go
+          </button>
+        </div>
+      ) : (
+        <button
+          onClick={() => setShowPasswordInput(true)}
+          className="absolute bottom-5 right-5 bg-black bg-opacity-50 text-white text-xs px-2 py-1 rounded opacity-50 hover:opacity-100 transition-opacity z-20"
+        >
+          Admin
+        </button>
+      )}
     </div>
   );
 }
