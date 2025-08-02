@@ -1,7 +1,7 @@
 import Script from 'next/script';
 import { useState, useEffect } from 'react';
 import Head from 'next/head';
-import LandingPage from './components/LandingPage'; // <-- NEW IMPORT
+import LandingPage from '../components/LandingPage';
 
 export default function Home() {
   // --- STATE MANAGEMENT ---
