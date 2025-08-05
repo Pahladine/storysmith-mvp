@@ -17,21 +17,18 @@ export default function LandingPage({ email, setEmail, showLandingPage, setShowL
           opacity: isVideoFinished ? 1 : 0,
         }}
       >
-        <div className="flex flex-col items-center justify-center h-full text-center text-white p-4 bg-black bg-opacity-50">
+        <div className="flex flex-col items-center justify-center h-full text-center text-white p-4 bg-black bg-opacity-40">
 
-          {/* 1. Made "StorySmith" larger and more of a title. */}
           <h2 className="text-5xl font-bold mb-4 tracking-wider" style={{ fontFamily: 'Cinzel, serif', color: '#F5F0E8', textShadow: '1px 1px 3px rgba(0,0,0,0.3)' }}>
             StorySmith
           </h2>
 
-          {/* 2. Added a subtle divider for a touch of elegance. */}
           <hr className="w-24 border-t-2 border-amber-300 opacity-60 mb-8" />
           
           <h1 className="text-4xl sm:text-5xl md:text-7xl font-extrabold mb-4" style={{ fontFamily: 'Cinzel, serif', color: '#F5F0E8' }}>
             Your Story, Magically Told.
           </h1>
 
-          {/* 3. Broke the sub-headline into two parts for better readability and emphasis. */}
           <div className="max-w-2xl mx-auto space-y-4">
             <p className="text-lg md:text-xl" style={{ fontFamily: 'Lato, sans-serif', color: '#EAE0D5' }}>
               StorySmith is your guide on a fun, creative journey to turn your ideas—or a loved one's photo—into a beautifully illustrated, professional storybook.
@@ -49,7 +46,6 @@ export default function LandingPage({ email, setEmail, showLandingPage, setShowL
               placeholder="Enter your email address"
               className="flex-1 p-2 sm:p-3 rounded-lg text-gray-800 bg-white border border-gray-300 focus:outline-none focus:ring-2 focus:ring-amber-500"
             />
-            {/* 4. Changed button color to a warm amber to match the aesthetic. */}
             <button
               type="submit"
               className="px-6 py-3 bg-amber-700 text-white font-bold rounded-lg shadow-md hover:bg-amber-800 transition duration-300"
@@ -75,6 +71,17 @@ export default function LandingPage({ email, setEmail, showLandingPage, setShowL
       >
         Your browser does not support the video tag.
       </video>
+
+      {/* NEW: Skip Intro Button */}
+      {!isVideoFinished && (
+        <button
+          onClick={() => setIsVideoFinished(true)}
+          className="absolute bottom-5 left-5 z-20 px-4 py-2 text-sm font-semibold text-white bg-black bg-opacity-50 rounded-lg shadow-md hover:bg-opacity-60 transition-all duration-300"
+        >
+          Skip Intro
+        </button>
+      )}
+
       {/* Admin Button and Password Field */}
       {showPasswordInput ? (
         <div className="absolute bottom-5 right-5 flex items-center space-x-2 z-20">
