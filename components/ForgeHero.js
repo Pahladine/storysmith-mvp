@@ -191,7 +191,7 @@ export default function ForgeHero({
               </div>
             ) : heroImageUrl ? (
               <div className="bg-gray-900/50 border border-stone-700 rounded-lg p-4 flex justify-center items-center min-h-[200px] mb-6">
-                <img src={heroImageUrl} alt="Generated Hero Portrait" className="max-h-96 w-auto rounded-lg shadow-lg" />
+                <img src={heroImageUrl} alt="Generated Hero Portrait" className="max-h-[36rem] w-auto rounded-lg shadow-lg" />
               </div>
             ) : ( <div className="bg-gray-900/50 border border-stone-700 rounded-lg p-4 flex justify-center items-center min-h-[200px] mb-6"><p className="text-stone-400">An error occurred, or no image was generated.</p></div> )}
             <div className="flex flex-col sm:flex-row justify-center space-y-4 sm:space-y-0 sm:space-x-4">
