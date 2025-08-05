@@ -1,7 +1,26 @@
-# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
-
-node_modules
+# Next.js build output
 .next
 out
 
+# Vercel deployment
 .vercel
+
+# Node modules
+node_modules
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Env and config
+.env*
+.env.*
+firebase-debug.log
+firebase-debug.*
+
+# OS/IDE clutter
+.DS_Store
+*.swp
+.idea
+.vscode
