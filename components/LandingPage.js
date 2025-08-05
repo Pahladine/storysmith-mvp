@@ -18,11 +18,14 @@ export default function LandingPage({ email, setEmail, showLandingPage, setShowL
         }}
       >
         <div className="flex flex-col items-center justify-center h-full text-center text-white p-4 bg-black bg-opacity-40">
+          <h2 className="text-3xl sm:text-4xl font-bold mb-8 tracking-wider" style={{ fontFamily: 'Cinzel, serif', color: '#F5F0E8', opacity: 0.9 }}>
+            StorySmith
+          </h2>
           <h1 className="text-4xl sm:text-5xl md:text-7xl font-extrabold mb-4" style={{ fontFamily: 'Cinzel, serif', color: '#F5F0E8' }}>
-            Your Imagination, Instantly Illustrated.
+            Your Story, Magically Told.
           </h1>
           <p className="text-xl md:text-2xl mb-8 max-w-3xl" style={{ fontFamily: 'Lato, sans-serif', color: '#EAE0D5' }}>
-            A new era of storytelling is coming soon. Sign up to be notified when we launch.
+            StorySmith is your guide on a fun, creative journey to turn your ideas—or a loved one's photo—into a beautifully illustrated, professional storybook. The power of AI, made simple for everyone.
           </p>
           <form onSubmit={handleSignUpSubmit} className="flex flex-col sm:flex-row items-center w-full max-w-lg space-y-4 sm:space-y-0 sm:space-x-4 px-4 sm:px-0">
             <input
