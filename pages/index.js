@@ -26,6 +26,9 @@ export default function Home() {
   const [showPasswordInput, setShowPasswordInput] = useState(false);
   const [adminPasswordInput, setAdminPasswordInput] = useState('');
   const password = process.env.NEXT_PUBLIC_ADMIN_PASSWORD || '6425';
+  
+  // NEW STATE to safely manage the shared response text
+  const [sharedResponse, setSharedResponse] = useState("");
 
   const tabs = [
     { label: 'Forge Hero' },
@@ -115,14 +118,15 @@ export default function Home() {
                   </button>
                 ))}
               </div>
-              {/* Styled AI Response Box */}
+              {/* This box now displays the sharedResponse state */}
               <div id="shared-response-box" className="min-h-[100px] bg-gray-900/70 rounded-lg p-6 mb-6 text-gray-100 shadow-inner border border-stone-600/50">
-                  {/* This area will be used for global messages or responses from child components */}
+                  {sharedResponse}
               </div>
 
-              {activeTab === 0 && <ForgeHero storyState={storyState} setStoryState={setStoryState} setActiveTab={setActiveTab} generateImageSimulated={generateImageSimulated} isLoading={isLoading} isImageLoading={isImageLoading} />}
-              {activeTab === 1 && <SpinTale storyState={storyState} setStoryState={setStoryState} setActiveTab={setActiveTab} isLoading={isLoading} isImageLoading={isImageLoading} />}
-              {activeTab === 2 && <BindBook storyState={storyState} setStoryState={setStoryState} setActiveTab={setActiveTab} resetApp={resetApp} generateImageSimulated={generateImageSimulated} isLoading={isLoading} isImageLoading={isImageLoading} setIsLoading={setIsLoading} setIsImageLoading={setIsImageLoading} />}
+              {/* Pass the setSharedResponse function as a prop to the components */}
+              {activeTab === 0 && <ForgeHero storyState={storyState} setStoryState={setStoryState} setActiveTab={setActiveTab} setSharedResponse={setSharedResponse} generateImageSimulated={generateImageSimulated} isLoading={isLoading} isImageLoading={isImageLoading} />}
+              {activeTab === 1 && <SpinTale storyState={storyState} setStoryState={setStoryState} setActiveTab={setActiveTab} setSharedResponse={setSharedResponse} isLoading={isLoading} isImageLoading={isImageLoading} />}
+              {activeTab === 2 && <BindBook storyState={storyState} setStoryState={setStoryState} setActiveTab={setActiveTab} setSharedResponse={setSharedResponse} resetApp={resetApp} generateImageSimulated={generateImageSimulated} isLoading={isLoading} isImageLoading={isImageLoading} setIsLoading={setIsLoading} setIsImageLoading={setIsImageLoading} />}
             
             </div>
             {/* Ledger Card */}
