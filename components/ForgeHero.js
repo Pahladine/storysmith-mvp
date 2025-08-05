@@ -1,6 +1,6 @@
 // components/ForgeHero.js
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 // This component now encapsulates all the steps and UI for the "Forge Hero" process.
 export default function ForgeHero({
