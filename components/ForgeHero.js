@@ -3,15 +3,12 @@
 import { useState, useEffect } from 'react';
 
 export default function ForgeHero({
-  // Props it needs from the main page
   storyState,
   setStoryState,
   setActiveTab,
   setSharedResponse,
   isLoading,
-  isImageLoading
 }) {
-  // We now manage isImageLoading directly in this component
   const [isImageLoading_local, setIsImageLoading_local] = useState(false);
   const [currentForgeHeroStep, setCurrentForgeHeroStep] = useState(0);
   const [heroDetails, setHeroDetails] = useState({
@@ -21,15 +18,15 @@ export default function ForgeHero({
     beginning: '', middle: '', end: '', numberOfScenes: null,
   });
   const [heroImageUrl, setHeroImageUrl] = useState('');
+  const [uploadedImageUrl, setUploadedImageUrl] = useState(''); // State for the user's uploaded image
 
   useEffect(() => {
     setSharedResponse("Welcome, brave adventurer! To begin our grand tale, tell me, from where shall our hero emerge?");
   }, []);
 
-  // NEW: This function calls our own backend API route
   const generateRealImage = async (prompt) => {
     setIsImageLoading_local(true);
-    setHeroImageUrl(''); // Clear previous image
+    setHeroImageUrl(''); 
 
     try {
       const response = await fetch('/api/generateImage', {
@@ -41,17 +38,16 @@ export default function ForgeHero({
       });
 
       if (!response.ok) {
-        // If the server response is not OK, get the error message and throw it
         const errorData = await response.json();
         throw new Error(errorData.error || 'Failed to generate image.');
       }
 
       const data = await response.json();
-      setHeroImageUrl(data.imageUrl); // Set the new image URL from the response
+      setHeroImageUrl(data.imageUrl);
 
     } catch (error) {
       console.error("Error generating image:", error);
-      setSharedResponse(`An error occurred: ${error.message}`); // Show error to user
+      setSharedResponse(`An error occurred: ${error.message}`);
     } finally {
       setIsImageLoading_local(false);
     }
@@ -71,13 +67,42 @@ export default function ForgeHero({
         wardrobe: "a shimmering tunic and tiny adventurer boots", signatureItem: "a glowing mossy pebble",
       };
       setHeroDetails(simulatedHero);
-      // Calls the new image generation function
       generateRealImage(constructHeroPrompt(simulatedHero));
       setCurrentForgeHeroStep(3);
       setSharedResponse("Behold, the hero’s face shines with living light! Does this portrait sing true to your vision, brave creator?");
     }
   };
-  
+
+  // UPDATED: This function now handles the upload to Vercel Blob
+  const handlePhotoFileChange = async (event) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    // We can use the global isLoading state for uploads
+    setHeroDetails(prev => ({ ...prev, photoFile: file }));
+    setSharedResponse("Uploading your image, please wait...");
+
+    try {
+      const response = await fetch(`/api/upload?filename=${file.name}`, {
+        method: 'POST',
+        body: file,
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to upload file.');
+      }
+
+      const newBlob = await response.json();
+      setUploadedImageUrl(newBlob.url); // Save the URL of the uploaded image
+      setSharedResponse("Magnificent! I have received the image. Now, let us discover the details that a photograph can only guess at... the true heart of our hero!");
+      setCurrentForgeHeroStep(2);
+      
+    } catch (error) {
+      console.error(error);
+      setSharedResponse(`An error occurred during upload: ${error.message}`);
+    }
+  };
+
   const handleForgeHeroSubmit = () => {
       const prompt = constructHeroPrompt();
       setSharedResponse("Behold, the hero’s face shines with living light! Does this portrait sing true to your vision, brave creator?");
@@ -88,15 +113,6 @@ export default function ForgeHero({
   const handleHeroDetailChange = (e) => {
     const { name, value } = e.target;
     setHeroDetails(prev => ({ ...prev, [name]: value }));
-  };
-
-  const handlePhotoFileChange = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      setHeroDetails(prev => ({ ...prev, photoFile: file }));
-      setSharedResponse("Magnificent! I have received the image. Now, let us discover the details that a photograph can only guess at... the true heart of our hero!");
-      setCurrentForgeHeroStep(2);
-    }
   };
 
   const constructHeroPrompt = (details = heroDetails) => {
@@ -123,7 +139,7 @@ export default function ForgeHero({
         ...(prev.story_content || {}),
         CharacterBlock: { ...(prev.story_content?.CharacterBlock || {}), character_details: heroDetails, appearance: { ...(prev.story_content?.CharacterBlock?.appearance || {}), visual_style: "3D animated Film", wardrobe: heroDetails.wardrobe, signature_item: heroDetails.signatureItem, }, },
         StoryBlueprintBlock: { ...(prev.story_content?.StoryBlueprintBlock || {}), structure: storyBlueprint, },
-        AssetsManifest: { ...(prev.story_content?.AssetsManifest || {}), hero_image_url: heroImageUrl, },
+        AssetsManifest: { ...(prev.story_content?.AssetsManifest || {}), hero_image_url: heroImageUrl, user_uploaded_image_url: uploadedImageUrl },
       };
       const updatedStoryData = {
         ...(prev.story_data || {}), story_title: `${heroDetails.name || 'A Hero'}'s Adventure`, thematic_tone: "whimsical", visual_style: "3D animated Film", visual_consistency_tag: `${heroDetails.name || 'Hero'}_whimsical_3D`,
@@ -158,6 +174,7 @@ export default function ForgeHero({
             {heroDetails.photoFile && (<p className="mt-4 text-sm text-stone-300">File selected: {heroDetails.photoFile.name}</p>)}
           </div>
         );
+    // Cases 2 through 5 remain the same...
     case 2:
       return (
         <div className="space-y-4 max-w-lg mx-auto">
