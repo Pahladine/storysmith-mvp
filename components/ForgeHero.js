@@ -2,17 +2,17 @@
 
 import { useState, useEffect } from 'react';
 
-// This component now encapsulates all the steps and UI for the "Forge Hero" process.
 export default function ForgeHero({
   // Props it needs from the main page
   storyState,
   setStoryState,
   setActiveTab,
+  setSharedResponse,
   isLoading,
-  isImageLoading,
-  generateImageSimulated // We pass down the simulation function
+  isImageLoading
 }) {
-  // State that is ONLY used by this component can live here.
+  // We now manage isImageLoading directly in this component
+  const [isImageLoading_local, setIsImageLoading_local] = useState(false);
   const [currentForgeHeroStep, setCurrentForgeHeroStep] = useState(0);
   const [heroDetails, setHeroDetails] = useState({
     type: '', name: '', age: '', gender: '', traits: '', wardrobe: '', signatureItem: '', photoFile: null,
@@ -21,27 +21,68 @@ export default function ForgeHero({
     beginning: '', middle: '', end: '', numberOfScenes: null,
   });
   const [heroImageUrl, setHeroImageUrl] = useState('');
-  const [response, setResponse] = useState("Welcome, brave adventurer! To begin our grand tale, tell me, from where shall our hero emerge?"); // Initial response
 
-  // All the helper functions from index.js that were only for forging a hero are moved here.
+  useEffect(() => {
+    setSharedResponse("Welcome, brave adventurer! To begin our grand tale, tell me, from where shall our hero emerge?");
+  }, []);
+
+  // NEW: This function calls our own backend API route
+  const generateRealImage = async (prompt) => {
+    setIsImageLoading_local(true);
+    setHeroImageUrl(''); // Clear previous image
+
+    try {
+      const response = await fetch('/api/generateImage', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ prompt }),
+      });
+
+      if (!response.ok) {
+        // If the server response is not OK, get the error message and throw it
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Failed to generate image.');
+      }
+
+      const data = await response.json();
+      setHeroImageUrl(data.imageUrl); // Set the new image URL from the response
+
+    } catch (error) {
+      console.error("Error generating image:", error);
+      setSharedResponse(`An error occurred: ${error.message}`); // Show error to user
+    } finally {
+      setIsImageLoading_local(false);
+    }
+  };
+
   const handleHeroTypeSelection = (type) => {
     setHeroDetails(prev => ({ ...prev, type }));
     if (type === 'real') {
       setCurrentForgeHeroStep(1);
-      setResponse("How marvelous! A legend in the making! To truly capture their essence, would you be willing to share a photograph of our hero?");
+      setSharedResponse("How marvelous! A legend in the making! To truly capture their essence, would you be willing to share a photograph of our hero?");
     } else if (type === 'fictional') {
       setCurrentForgeHeroStep(2);
-      setResponse("Wonderful! A hero born of pure imagination! Together, we shall give them form and heart. Let us begin!");
+      setSharedResponse("Wonderful! A hero born of pure imagination! Together, we shall give them form and heart. Let us begin!");
     } else if (type === 'surprise') {
       const simulatedHero = {
         name: "Sparklehoof", age: "6", gender: "non-binary", traits: "brave, curious, and kind",
         wardrobe: "a shimmering tunic and tiny adventurer boots", signatureItem: "a glowing mossy pebble",
       };
       setHeroDetails(simulatedHero);
-      generateImageSimulated(constructHeroPrompt(simulatedHero), 'hero').then(url => setHeroImageUrl(url));
+      // Calls the new image generation function
+      generateRealImage(constructHeroPrompt(simulatedHero));
       setCurrentForgeHeroStep(3);
-      setResponse("Behold, the hero’s face shines with living light! Does this portrait sing true to your vision, brave creator?");
+      setSharedResponse("Behold, the hero’s face shines with living light! Does this portrait sing true to your vision, brave creator?");
     }
+  };
+  
+  const handleForgeHeroSubmit = () => {
+      const prompt = constructHeroPrompt();
+      setSharedResponse("Behold, the hero’s face shines with living light! Does this portrait sing true to your vision, brave creator?");
+      generateRealImage(prompt);
+      setCurrentForgeHeroStep(3);
   };
 
   const handleHeroDetailChange = (e) => {
@@ -53,7 +94,7 @@ export default function ForgeHero({
     const file = e.target.files[0];
     if (file) {
       setHeroDetails(prev => ({ ...prev, photoFile: file }));
-      setResponse("Magnificent! I have received the image. Now, let us discover the details that a photograph can only guess at... the true heart of our hero!");
+      setSharedResponse("Magnificent! I have received the image. Now, let us discover the details that a photograph can only guess at... the true heart of our hero!");
       setCurrentForgeHeroStep(2);
     }
   };
@@ -68,7 +109,7 @@ export default function ForgeHero({
   const handleNumberOfScenesSelection = (value) => {
     const num = parseInt(value);
     setStoryBlueprint(prev => ({ ...prev, numberOfScenes: num }));
-    setResponse(`A grand choice! Our tale shall unfold into ${num} scenes. Now, to truly chart our course, let's establish the grand arc of our adventure!`);
+    setSharedResponse(`A grand choice! Our tale shall unfold into ${num} scenes. Now, to truly chart our course, let's establish the grand arc of our adventure!`);
     const simulatedBeginning = `Our hero, ${heroDetails.name || 'the brave one'}, embarks on a quest to find a mystical artifact.`;
     const simulatedMiddle = `Along their journey, they face challenges, including a mischievous forest spirit and a tricky maze.`;
     const simulatedEnd = `With courage and wit, they overcome all obstacles, retrieve the artifact, and return home a true legend.`;
@@ -89,23 +130,12 @@ export default function ForgeHero({
       };
       return { ...prev, story_content: updatedStoryContent, story_data: updatedStoryData };
     });
-    // This function now just calls the prop to switch the tab
     setActiveTab(1);
   };
 
   // Define consistent button styles
-  const primaryButtonStyle = "px-6 py-3 bg-stone-700 text-stone-100 rounded-lg shadow-md hover:bg-stone-600 border border-stone-500 transition duration-300";
+  const primaryButtonStyle = "px-6 py-3 bg-stone-700 text-stone-100 rounded-lg shadow-md hover:bg-stone-600 border border-stone-500 transition duration-300 disabled:opacity-50 disabled:cursor-not-allowed";
   const secondaryButtonStyle = "px-6 py-3 bg-stone-800 text-stone-300 rounded-lg shadow-md hover:bg-stone-700 border border-stone-600 transition duration-300";
-  
-  // The response text now lives inside the shared response box in index.js, but we can have local messages too.
-  // We'll update the shared box in a useEffect hook. This is a better pattern.
-  useEffect(() => {
-      const sharedBox = document.getElementById('shared-response-box');
-      if (sharedBox) {
-          sharedBox.innerText = response;
-      }
-  }, [response]);
-
 
   switch (currentForgeHeroStep) {
     case 0:
@@ -121,7 +151,6 @@ export default function ForgeHero({
     case 1:
         return (
           <div className="text-center">
-            {/* We'll use a styled label for the file input for better appearance */}
             <label htmlFor="photo-upload" className={`${primaryButtonStyle} cursor-pointer`}>
               Upload a Photograph
             </label>
@@ -147,15 +176,15 @@ export default function ForgeHero({
               )}
             </div>
           ))}
-          <button onClick={() => { generateImageSimulated(constructHeroPrompt(), 'hero').then(url => setHeroImageUrl(url)); setCurrentForgeHeroStep(3); setResponse("Behold, the hero’s face shines with living light! Does this portrait sing true to your vision, brave creator?"); }} className={`${primaryButtonStyle} w-full`} disabled={isLoading || isImageLoading}>
-            {isLoading || isImageLoading ? 'Sculpting Hero...' : 'Forge My Hero!'}
+          <button onClick={handleForgeHeroSubmit} className={`${primaryButtonStyle} w-full`} disabled={isImageLoading_local}>
+            {isImageLoading_local ? 'Forging Hero...' : 'Forge My Hero!'}
           </button>
         </div>
       );
     case 3:
       return (
         <div className="text-center">
-            {isImageLoading ? (
+            {isImageLoading_local ? (
               <div className="flex justify-center items-center h-[200px] bg-gray-900/50 rounded-lg border border-stone-700">
                 <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-stone-400"></div>
                 <p className="ml-4 text-lg text-stone-300">Conjuring image...</p>
@@ -164,10 +193,10 @@ export default function ForgeHero({
               <div className="bg-gray-900/50 border border-stone-700 rounded-lg p-4 flex justify-center items-center min-h-[200px] mb-6">
                 <img src={heroImageUrl} alt="Generated Hero Portrait" className="max-w-full h-auto rounded-lg shadow-lg" />
               </div>
-            ) : ( <div className="bg-gray-900/50 border border-stone-700 rounded-lg p-4 flex justify-center items-center min-h-[200px] mb-6"><p className="text-stone-400">No image generated yet.</p></div> )}
+            ) : ( <div className="bg-gray-900/50 border border-stone-700 rounded-lg p-4 flex justify-center items-center min-h-[200px] mb-6"><p className="text-stone-400">An error occurred, or no image was generated.</p></div> )}
             <div className="flex flex-col sm:flex-row justify-center space-y-4 sm:space-y-0 sm:space-x-4">
-              <button onClick={() => { setResponse("Splendid! Then it is settled. Your hero is forged! Now, let us chart the course of their grand adventure!"); setCurrentForgeHeroStep(4); }} className={primaryButtonStyle} disabled={isImageLoading}>Yes, that’s perfect!</button>
-              <button onClick={() => { setResponse("But of course! The vision is not yet perfect! Let's refine the details."); setCurrentForgeHeroStep(2); setHeroImageUrl(''); }} className={secondaryButtonStyle} disabled={isImageLoading}>Not quite, let’s refine.</button>
+              <button onClick={() => { setSharedResponse("Splendid! Then it is settled. Your hero is forged! Now, let us chart the course of their grand adventure!"); setCurrentForgeHeroStep(4); }} className={primaryButtonStyle} disabled={isImageLoading_local}>Yes, that’s perfect!</button>
+              <button onClick={() => { setSharedResponse("But of course! The vision is not yet perfect! Let's refine the details."); setCurrentForgeHeroStep(2); setHeroImageUrl(''); }} className={secondaryButtonStyle} disabled={isImageLoading_local}>Not quite, let’s refine.</button>
             </div>
           </div>
       );
@@ -195,8 +224,8 @@ export default function ForgeHero({
             <p className="text-stone-300 mb-4 whitespace-pre-wrap">{storyBlueprint.end}</p>
           </div>
           <div className="flex flex-col sm:flex-row justify-center space-y-4 sm:space-y-0 sm:space-x-4 mt-6">
-            <button onClick={handleForgeHeroCompletion} className={primaryButtonStyle} disabled={isLoading || isImageLoading}>This blueprint is perfect!</button>
-            <button onClick={() => { setResponse("A true cartographer refines their map!"); setStoryBlueprint(prev => ({ ...prev, beginning: '', middle: '', end: '', numberOfScenes: null, })); setCurrentForgeHeroStep(4); }} className={secondaryButtonStyle} disabled={isLoading || isImageLoading}>Let’s refine this map.</button>
+            <button onClick={handleForgeHeroCompletion} className={primaryButtonStyle} disabled={isLoading}>This blueprint is perfect!</button>
+            <button onClick={() => { setSharedResponse("A true cartographer refines their map!"); setStoryBlueprint(prev => ({ ...prev, beginning: '', middle: '', end: '', numberOfScenes: null, })); setCurrentForgeHeroStep(4); }} className={secondaryButtonStyle} disabled={isLoading}>Let’s refine this map.</button>
           </div>
         </div>
       );
