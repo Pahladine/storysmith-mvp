@@ -82,9 +82,9 @@ export default function Home() {
           backgroundImage: `url('/app-background.jpg')`,
           backgroundSize: 'cover',
           backgroundPosition: 'center',
-          backgroundAttachment: 'fixed', // This keeps the background stationary during scroll
-          filter: 'blur(4px) brightness(0.7)', // Adds blur and darkens the image
-          transform: 'scale(1.05)' // Prevents blurred edges from showing
+          backgroundAttachment: 'fixed',
+          filter: 'blur(4px) brightness(0.7)',
+          transform: 'scale(1.05)'
         }}
       />
       {/* Darkening Overlay */}
@@ -94,7 +94,7 @@ export default function Home() {
       <div className="relative z-10 flex flex-col min-h-screen">
         <header className="bg-transparent py-4 border-b border-gray-700/50">
           <div className="max-w-7xl mx-auto px-8 flex justify-between items-center">
-            <h1 className="text-4xl sm:text-5xl font-extrabold text-amber-300" style={{ fontFamily: 'Cinzel, serif' }}>StorySmith</h1>
+            <h1 className="text-4xl sm:text-5xl font-extrabold text-stone-200" style={{ fontFamily: 'Cinzel, serif' }}>StorySmith</h1>
             <nav>
               <ul className="flex space-x-6">
                 <li><a href="#" onClick={(e) => { e.preventDefault(); resetApp(); }} className="text-gray-300 hover:text-white transition-colors">Home</a></li>
@@ -104,19 +104,19 @@ export default function Home() {
         </header>
         <main className="flex-1 py-12 px-4 sm:px-8">
           <div className="max-w-7xl mx-auto h-full flex flex-col md:flex-row gap-8">
-            {/* Main Content Card with "Frosted Glass" effect */}
-            <div className="flex-1 flex flex-col bg-gray-800/50 backdrop-blur-sm border border-gray-500/30 rounded-2xl shadow-2xl p-6 sm:p-8">
-              <h2 className="text-3xl font-semibold mb-6 text-center text-amber-200" style={{ fontFamily: 'Cinzel, serif' }}>Forge Your Story</h2>
+            {/* Main Content Card */}
+            <div className="flex-1 flex flex-col bg-gray-800/50 backdrop-blur-sm border border-stone-500/30 rounded-2xl shadow-2xl p-6 sm:p-8">
+              <h2 className="text-3xl font-semibold mb-6 text-center text-stone-200" style={{ fontFamily: 'Cinzel, serif' }}>Forge Your Story</h2>
               <div className="flex justify-center mb-8 space-x-2 sm:space-x-4">
                 {tabs.map((tab, index) => (
                   <button key={index} onClick={() => setActiveTab(index)}
-                    className={`px-4 sm:px-6 py-3 rounded-full text-base sm:text-lg font-medium transition-all duration-300 ${activeTab === index ? 'bg-amber-600 text-white shadow-lg' : 'bg-gray-700/50 text-gray-300 hover:bg-gray-700/80'}`}>
+                    className={`px-4 sm:px-6 py-3 rounded-full text-base sm:text-lg font-medium transition-all duration-300 ${activeTab === index ? 'bg-stone-700 text-white shadow-lg border border-stone-500' : 'bg-gray-700/50 text-gray-300 hover:bg-gray-700/80'}`}>
                     {tab.label}
                   </button>
                 ))}
               </div>
               {/* Styled AI Response Box */}
-              <div id="shared-response-box" className="min-h-[100px] bg-gray-900/70 rounded-lg p-6 mb-6 text-gray-100 shadow-inner border border-gray-600/50">
+              <div id="shared-response-box" className="min-h-[100px] bg-gray-900/70 rounded-lg p-6 mb-6 text-gray-100 shadow-inner border border-stone-600/50">
                   {/* This area will be used for global messages or responses from child components */}
               </div>
 
@@ -127,8 +127,8 @@ export default function Home() {
             </div>
             {/* Ledger Card */}
             {activeTab === 2 && (
-              <div className="w-full md:w-1/3 flex-shrink-0 bg-gray-800/50 backdrop-blur-sm border border-gray-500/30 rounded-2xl shadow-2xl p-6 sm:p-8">
-                <h3 className="text-2xl font-semibold mb-4 text-center text-amber-200" style={{ fontFamily: 'Cinzel, serif' }}>The Grand Ledger</h3>
+              <div className="w-full md:w-1/3 flex-shrink-0 bg-gray-800/50 backdrop-blur-sm border border-stone-500/30 rounded-2xl shadow-2xl p-6 sm:p-8">
+                <h3 className="text-2xl font-semibold mb-4 text-center text-stone-200" style={{ fontFamily: 'Cinzel, serif' }}>The Grand Ledger</h3>
                 <div className="max-h-[70vh] overflow-y-auto custom-scrollbar pr-2">
                   <LedgerContent storyState={storyState} />
                 </div>
