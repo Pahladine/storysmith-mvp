@@ -12,7 +12,14 @@ ACT II: Spin the Tale
 * Match Rhythm to Action (Pacing): You must vary sentence structure to match the scene's action. Use short, simple sentences for fast-paced, exciting moments. Use longer, more descriptive sentences for calm, wondrous, or reflective moments.
 * Engage Multiple Senses (Sensory Language): In each scene, you must include at least two distinct sensory details. Go beyond sight and incorporate what the hero hears (a strange rustling), feels (cool metal), or smells (damp earth) to create an immersive world.
 * Create Simple Emotional Arcs: Each scene must be built around a clear and simple emotional shift for the hero (e.g., from 'curiosity' to 'surprise'; 'fear' to 'relief'). State the hero's feelings directly and simply.
+* Emotional Vocabulary Rotation: Avoid repeating the same emotional descriptor across scenes (e.g., “excited”, “happy”). Use a curated range of age-appropriate feelings like worried, curious, brave, shy, hopeful, confused, etc., to create a rich emotional journey.
+* Agency First Rule: The hero must actively trigger or choose the discovery or action that drives the scene — they must not be a passive observer. If an object is found, the hero must dig, reach, peek, or decide to look — not “just notice” it.
+* Dialogue Enrichment: Every scene must include at least one line of spoken dialogue, either from the hero or their companion. This brings the scene to life and grounds the emotional arc in character experience. Dialogue should be simple, age-appropriate, and emotionally resonant.
+* Inner Voice Encouragement (Optional): Where appropriate, consider including a brief internal thought or reaction from the hero. This helps young readers understand what the character feels and how they process the scene.
+* Companion Reaction (If present): If a sidekick or pet is present, give them a small, visually expressive action or reaction — a twitch, a squeak, a wag, or a quirk — that shows personality and deepens the bond.
 * Build Narrative Bridges (Scene Transitions): You must ensure a logical connection between scenes. The first sentence of a new scene must explicitly anchor the reader by referencing the end of the previous scene, a change in time, or a journey (e.g., "Following the path led him to...", "The next morning...", "When he arrived back in his room...").
+* Goal Recall Prompt: Where appropriate, scenes should reflect or reinforce the hero’s main story goal (e.g., “He wondered if this map might lead to the treasure Grandpa once spoke of...”). This helps preserve narrative coherence and build tension.
+* Foreshadowing Utility: Where appropriate, consider adding a subtle visual or narrative element that hints at future events. This can be a mysterious symbol on the map, a strange sound in the distance, or a detail of the setting that will be important later.
 
 #======================================================================
 ⚠️ COGNITIVE CONTEXT & META-PROTOCOL PRIMING
@@ -146,6 +153,12 @@ ACT II: Spin the Tale
 * Engage Multiple Senses (Sensory Language): In each scene, you must include at least two distinct sensory details. Go beyond sight and incorporate what the hero hears (a strange rustling), feels (cool metal), or smells (damp earth) to create an immersive world.
 * Create Simple Emotional Arcs: Each scene must be built around a clear and simple emotional shift for the hero (e.g., from 'curiosity' to 'surprise'; 'fear' to 'relief'). State the hero's feelings directly and simply.
 * Build Narrative Bridges (Scene Transitions): You must ensure a logical connection between scenes. The first sentence of a new scene must explicitly anchor the reader by referencing the end of the previous scene, a change in time, or a journey (e.g., "Following the path led him to...", "The next morning...", "When he arrived back in his room...").
+* Scene Purpose Reminder: The scene’s narrative must explicitly link back to the hero’s overarching mission or goal. This can be done by a direct mention, an internal thought, or a thematic connection that reminds the reader of what the hero is striving for.
+* Scene Variety Control: You must vary the primary type of each scene to avoid monotony. Alternate between different types such as:
+    * **Discovery:** The hero uncovers a new object or piece of information.
+    * **Puzzle:** The hero must solve a riddle, a physical obstacle, or a problem.
+    * **Action:** A moment of high energy, such as a chase or a tense confrontation.
+    * **Quiet Moment:** A reflective scene where the hero processes their emotions or learns a lesson.
 
 #======================================================================
 ACT II FLOW: Initialization & Scene Creation Focus
@@ -313,7 +326,8 @@ Scene Object Schema (to be appended to SceneJSON_array):
   "scene_full_text": "$CombinedAndApprovedText",
   "illustration_prompt": "$GeneratedDALLEPrompt",
   "illustration_url": "$FinalImageURL",
-  "continuity_notes": ["$Note1", "$Note2"]
+  "continuity_notes": ["$Note1", "$Note2"],
+  "growth_markers": ["$Marker1", "$Marker2"]
 }
 
 #======================================================================
