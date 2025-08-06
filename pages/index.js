@@ -20,22 +20,47 @@ export default function Home() {
   const [activeTab, setActiveTab] = useState(0);
   const [isVideoFinished, setIsVideoFinished] = useState(false);
   const [storyState, setStoryState] = useState(initialStoryState);
+  const [showPasswordInput, setShowPasswordInput] = useState(false);
+  const [adminPasswordInput, setAdminPasswordInput] = useState('');
+  const password = process.env.NEXT_PUBLIC_ADMIN_PASSWORD || '6425';
   const [sharedResponse, setSharedResponse] = useState("");
 
-  // We now define the backgrounds and videos for each tab
   const tabs = [
     { label: 'Forge Hero', videoSrc: '/videos/Keeper1.mp4', bgSrc: '/background1.jpg' },
     { label: 'Spin Tale', videoSrc: '/videos/Keeper2.mp4', bgSrc: '/background2.jpg' },
     { label: 'Bind Book', videoSrc: '/videos/Keeper3.mp4', bgSrc: '/background3.jpg' },
   ];
   
-  const handleSignUpSubmit = async (e) => { e.preventDefault(); /* ... */ };
-  const handleAdminLogin = () => { /* ... */ };
-  const resetApp = () => { /* ... */ };
+  const handleSignUpSubmit = async (e) => {
+    e.preventDefault();
+    if (email && email.includes('@')) {
+      alert(`Thank you for signing up, ${email}!`);
+      setEmail('');
+    } else {
+      alert("Please enter a valid email address.");
+    }
+  };
+
+  const handleAdminLogin = () => {
+    if (adminPasswordInput === password) {
+      setShowLandingPage(false);
+      setShowPasswordInput(false);
+      setAdminPasswordInput('');
+    } else {
+      alert('Incorrect password!');
+      setAdminPasswordInput('');
+    }
+  };
+  
+  const resetApp = () => {
+      setStoryState(initialStoryState);
+      setActiveTab(0);
+      setShowLandingPage(true);
+      setIsVideoFinished(false);
+  };
 
   const renderAppInterface = () => (
     <div className="min-h-screen flex flex-col text-white relative overflow-hidden" style={{ fontFamily: 'Lato, sans-serif' }}>
-      {/* NEW: Dynamic Background System */}
       <div className="absolute inset-0 z-0">
         {tabs.map((tab, index) => (
           <div
@@ -46,7 +71,7 @@ export default function Home() {
               backgroundSize: 'cover',
               backgroundPosition: 'center',
               backgroundAttachment: 'fixed',
-              opacity: activeTab === index ? 1 : 0, // Only show the active background
+              opacity: activeTab === index ? 1 : 0,
             }}
           />
         ))}
@@ -82,9 +107,11 @@ export default function Home() {
               <div id="shared-response-box" className="w-full max-w-md mx-auto min-h-[100px] bg-black/20 backdrop-blur-sm border border-stone-500/50 rounded-lg p-6 mb-8 text-stone-200 shadow-lg text-center text-lg">
                   {sharedResponse}
               </div>
-              {activeTab === 0 && <ForgeHero setSharedResponse={setSharedResponse} />}
-              {activeTab === 1 && <SpinTale setSharedResponse={setSharedResponse} />}
-              {activeTab === 2 && <BindBook setSharedResponse={setSharedResponse} resetApp={resetApp} />}
+
+              {/* FIXED: Restored all necessary props to the child components */}
+              {activeTab === 0 && <ForgeHero storyState={storyState} setStoryState={setStoryState} setActiveTab={setActiveTab} setSharedResponse={setSharedResponse} />}
+              {activeTab === 1 && <SpinTale storyState={storyState} setStoryState={setStoryState} setActiveTab={setActiveTab} setSharedResponse={setSharedResponse} />}
+              {activeTab === 2 && <BindBook storyState={storyState} setStoryState={setStoryState} setActiveTab={setActiveTab} setSharedResponse={setSharedResponse} resetApp={resetApp} />}
             </div>
         </main>
       </div>
