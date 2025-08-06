@@ -22,6 +22,7 @@ export default function ForgeHero({
   });
   const [heroImageUrl, setHeroImageUrl] = useState('');
   const [uploadedImageUrl, setUploadedImageUrl] = useState('');
+  const [generatedName, setGeneratedName] = useState('');
 
   useEffect(() => {
     if (currentForgeHeroStep === 0) {
@@ -29,7 +30,6 @@ export default function ForgeHero({
     }
   }, [currentForgeHeroStep, setSharedResponse]);
 
-  // This function now calls the new backend API route
   const generateRealImage = async (prompt) => {
     setIsImageLoading_local(true);
     setSharedResponse("The forge hums with power... a new image is being crafted!");
@@ -74,10 +74,12 @@ export default function ForgeHero({
       }
 
       const data = await response.json();
-      handleQuestionAnswer('name', data.name, 'age');
+      setGeneratedName(data.name); // Set the generated name in a new state variable
+      setSharedResponse(`Behold! The hero's name is ${data.name}! Do you approve?`);
     } catch (error) {
       console.error("Name generation failed:", error);
       setSharedResponse("The magical winds are silent. An error occurred.");
+      setGeneratedName('');
     } finally {
       setIsNameLoading(false);
     }
@@ -113,11 +115,15 @@ export default function ForgeHero({
       }
   };
 
+  const handleNameConfirmation = (name) => {
+    handleQuestionAnswer('name', name, 'age');
+    setGeneratedName('');
+  };
+
   const constructHeroPrompt = (details) => {
     const { name, age, gender, traits, wardrobe, signatureItem } = details;
     let prompt = `${name || 'A young hero'}, a ${age || '7'}-year-old ${gender || 'child'} with ${traits || 'brave and curious'} traits, wearing ${wardrobe || 'a simple tunic and sturdy boots'}, holding ${signatureItem || 'a magical locket'}.`;
     prompt += " Style: 3D animated Film, Consistency Tag: whimsical_fantasy_child, Format: full body, front-facing. Lighting: soft cinematic. Rendered as a 3D animated film.";
-    // Add negative prompts to prevent unwanted text.
     let negativePrompt = " no text, no captions, no writing, no labels, no words";
     prompt += negativePrompt;
     return prompt;
@@ -148,6 +154,18 @@ export default function ForgeHero({
   const choiceButtonStyle = "w-full text-left p-4 bg-black/10 border border-black/20 rounded-lg text-stone-800 hover:bg-black/20 transition-all duration-300 shadow-sm font-semibold disabled:opacity-50 disabled:cursor-not-allowed";
   
   const renderConversationalForm = () => {
+    // If a name has been generated, show the confirmation screen
+    if (generatedName) {
+      return (
+        <div className="flex flex-col items-center space-y-4">
+          <p className="text-stone-800 text-lg font-bold">The name born of magic is:</p>
+          <p className="text-4xl font-extrabold text-amber-700" style={{ fontFamily: 'Cinzel, serif' }}>{generatedName}</p>
+          <button onClick={() => handleNameConfirmation(generatedName)} className={choiceButtonStyle}>Yes, that's perfect!</button>
+          <button onClick={() => setGeneratedName('')} className={choiceButtonStyle}>Not quite, let's try again.</button>
+        </div>
+      );
+    }
+    
     const currentStep = conversation[currentQuestion];
     if (currentStep) {
         setSharedResponse(currentStep.question);
@@ -162,9 +180,10 @@ export default function ForgeHero({
                         onClick={() => {
                             if (choice.action) {
                                 if (choice.action === 'ai_whimsical' || choice.action === 'ai_surprise') {
-                                    generateAIName(choice.action.split('_')[1]); // Pass 'whimsical' or 'surprise'
+                                    generateAIName(choice.action.split('_')[1]);
+                                } else {
+                                    setCurrentQuestion(choice.action);
                                 }
-                                setCurrentQuestion(choice.action);
                             } else {
                                 handleQuestionAnswer(choice.field, choice.value, choice.next);
                             }
@@ -177,7 +196,6 @@ export default function ForgeHero({
         );
     }
     
-    // Now, let's handle the specific name generation cases with a loading state
     if (isNameLoading) {
       setSharedResponse("By the power of starlight, a name is born!");
       return (
@@ -217,7 +235,6 @@ export default function ForgeHero({
     }
   }
 
-  // THIS IS THE FULLY RESTORED LOGIC
   const renderStepContent = () => {
     switch (currentForgeHeroStep) {
       case 0:
