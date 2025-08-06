@@ -144,7 +144,7 @@ export default function ForgeHero({
         </div>
       );
     }
-
+    
     const currentStep = conversation[currentQuestion];
     if (currentStep) {
         setSharedResponse(currentStep.question);
@@ -153,6 +153,34 @@ export default function ForgeHero({
         return (
             <div className={gridClass}>
                 {currentStep.choices.map((choice, index) => (
+                    <button 
+                        key={index} 
+                        className={`${choiceButtonStyle} ${choice.gridCols ? `col-span-${choice.gridCols}` : ''}`} 
+                        onClick={() => {
+                            if (choice.action) {
+                                if (choice.action === 'ai_whimsical' || choice.action === 'ai_surprise') {
+                                    generateAIName(choice.action.split('_')[1]);
+                                } else if (choice.action === 'name_suggestions') {
+                                    generateSuggestedNames();
+                                }
+                                setCurrentQuestion(choice.action);
+                            } else {
+                                handleQuestionAnswer(choice.field, choice.value, choice.next);
+                            }
+                        }}
+                    >
+                        {choice.text}
+                    </button>
+                ))}
+            </div>
+        );
+    } else if (currentQuestion === 'name') {
+        // This block handles the initial 'name' question, which was the bug.
+        setSharedResponse(conversation.name.question);
+        const gridClass = conversation.name.choices.some(c => c.gridCols) ? 'grid grid-cols-2 gap-4' : 'flex flex-col items-center space-y-4';
+        return (
+            <div className={gridClass}>
+                {conversation.name.choices.map((choice, index) => (
                     <button 
                         key={index} 
                         className={`${choiceButtonStyle} ${choice.gridCols ? `col-span-${choice.gridCols}` : ''}`} 
