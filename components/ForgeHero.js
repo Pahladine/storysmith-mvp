@@ -7,6 +7,7 @@ export default function ForgeHero({
   setStoryState,
   setActiveTab,
   setSharedResponse,
+  sharedResponse, // Add this
 }) {
   const [isImageLoading_local, setIsImageLoading_local] = useState(false);
   const [currentForgeHeroStep, setCurrentForgeHeroStep] = useState(0);
@@ -176,11 +177,12 @@ export default function ForgeHero({
         }}
     >
       <div 
-        id="shared-response-box-parchment"
-        className="w-full text-center text-xl mb-8 p-4 border-b-2 border-stone-400/50"
-      >
-        {/* We need to use the sharedResponse from the parent for this to update */}
-      </div>
+        <div 
+  id="shared-response-box-parchment"
+  className="w-full text-center text-xl mb-8 p-4 border-b-2 border-stone-400/50"
+>
+  {sharedResponse}
+</div>
 
       <div className="flex-1 overflow-y-auto custom-scrollbar pr-4">
         {renderStepContent()}
