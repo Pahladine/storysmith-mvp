@@ -8,7 +8,9 @@ import SpinTale from '../components/SpinTale';
 import BindBook from '../components/BindBook';
 import useAdminAuth from '../hooks/useAdminAuth';
 
-const initialStoryState = { /* ... */ };
+const initialStoryState = {
+  // ... initial state data
+};
 
 export default function Home() {
   const [email, setEmail] = useState('');
@@ -27,6 +29,7 @@ export default function Home() {
     handleAdminLogin,
   } = useAdminAuth(password, () => setShowLandingPage(false));
 
+  // This is the correct array that the application should be using
   const tabs = [
     { label: 'Forge Hero', videoSrc: '/videos/Keeper1.mp4', bgSrc: '/background1.jpg' },
     { label: 'Spin Tale', videoSrc: '/videos/Keeper2.mp4', bgSrc: '/background2.jpg' },
@@ -59,7 +62,6 @@ export default function Home() {
       <div className="relative z-10 flex flex-col min-h-screen">
         <header className="bg-transparent py-4">
           <div className="max-w-screen-2xl mx-auto px-8 flex justify-between items-center">
-            {/* FIXED: Corrected fontFamily syntax */}
             <h1 className="text-4xl sm:text-5xl font-extrabold text-stone-200" style={{ fontFamily: 'Cinzel, serif', textShadow: '0 0 5px rgba(255, 255, 255, 0.2)' }}>
               StorySmith
             </h1>
@@ -67,9 +69,9 @@ export default function Home() {
           </div>
         </header>
         
-        <main className="flex-1 relative">
-            <div className="absolute left-0 top-0 bottom-0 w-1/2 flex items-center justify-center p-8">
-                <div className="w-full h-full relative">
+        <main className="flex-1 grid grid-cols-1 md:grid-cols-2 gap-8 items-center p-8">
+            <div className="w-full flex justify-center items-center">
+                <div className="w-full max-w-xl aspect-video relative rounded-2xl shadow-2xl overflow-hidden">
                     <video
                         key={tabs[activeTab].videoSrc}
                         className="absolute top-0 left-0 w-full h-full object-cover"
@@ -83,8 +85,7 @@ export default function Home() {
                     </video>
                 </div>
             </div>
-
-            <div className="absolute right-0 top-0 bottom-0 w-1/2 flex items-center justify-center p-8">
+            <div className="w-full h-full flex justify-center items-center">
                 {activeTab === 0 && <ForgeHero storyState={storyState} setStoryState={setStoryState} setActiveTab={setActiveTab} setSharedResponse={setSharedResponse} sharedResponse={sharedResponse} />}
                 {activeTab === 1 && <SpinTale storyState={storyState} setStoryState={setStoryState} setActiveTab={setActiveTab} setSharedResponse={setSharedResponse} />}
                 {activeTab === 2 && <BindBook storyState={storyState} setStoryState={setStoryState} setActiveTab={setActiveTab} setSharedResponse={setSharedResponse} resetApp={resetApp} />}
