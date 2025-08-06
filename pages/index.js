@@ -21,12 +21,6 @@ export default function Home() {
   const [activeTab, setActiveTab] = useState(0);
   const [isVideoFinished, setIsVideoFinished] = useState(false);
   const [storyState, setStoryState] = useState(initialStoryState);
-  const [isLoading, setIsLoading] = useState(false);
-  const [isImageLoading, setIsImageLoading] = useState(false);
-  const [showPasswordInput, setShowPasswordInput] = useState(false);
-  const [adminPasswordInput, setAdminPasswordInput] = useState('');
-  const password = process.env.NEXT_PUBLIC_ADMIN_PASSWORD || '6425';
-  
   const [sharedResponse, setSharedResponse] = useState("");
 
   const tabs = [
@@ -36,33 +30,9 @@ export default function Home() {
   ];
   
   // --- GENERAL PURPOSE FUNCTIONS ---
-  const handleSignUpSubmit = async (e) => {
-    e.preventDefault();
-    if (email && email.includes('@')) {
-      alert(`Thank you for signing up, ${email}!`);
-      setEmail('');
-    } else {
-      alert("Please enter a valid email address.");
-    }
-  };
-
-  const handleAdminLogin = () => {
-    if (adminPasswordInput === password) {
-      setShowLandingPage(false);
-      setShowPasswordInput(false);
-      setAdminPasswordInput('');
-    } else {
-      alert('Incorrect password!');
-      setAdminPasswordInput('');
-    }
-  };
-  
-  const resetApp = () => {
-      setStoryState(initialStoryState);
-      setActiveTab(0);
-      setShowLandingPage(true);
-      setIsVideoFinished(false);
-  };
+  const handleSignUpSubmit = async (e) => { e.preventDefault(); /* ... */ };
+  const handleAdminLogin = () => { /* ... */ };
+  const resetApp = () => { /* ... */ };
 
   // --- RENDER LOGIC ---
   const renderAppInterface = () => (
@@ -83,19 +53,22 @@ export default function Home() {
       <div className="relative z-10 flex flex-col min-h-screen">
         <header className="bg-transparent py-4">
           <div className="max-w-7xl mx-auto px-8 flex justify-between items-center">
-            <h1 className="text-4xl sm:text-5xl font-extrabold text-stone-200" style={{ fontFamily: 'Cinzel, serif' }}>StorySmith</h1>
+            {/* UPDATED: Title with glow effect */}
+            <h1 className="text-4xl sm:text-5xl font-extrabold text-amber-200" style={{ fontFamily: 'Cinzel, serif', textShadow: '0 0 8px rgba(252, 211, 77, 0.7)' }}>
+              StorySmith
+            </h1>
             <nav><ul className="flex space-x-6"><li><a href="#" onClick={(e) => { e.preventDefault(); resetApp(); }} className="text-gray-300 hover:text-white transition-colors">Home</a></li></ul></nav>
           </div>
         </header>
         
-        {/* NEW IMMERSIVE LAYOUT */}
         <main className="flex-1 grid grid-cols-1 md:grid-cols-2 gap-8 items-center justify-items-center p-8">
 
-            {/* LEFT COLUMN: LARGER CHARACTER VIDEO PLAYER */}
+            {/* LEFT COLUMN: CHARACTER VIDEO PLAYER */}
             <div className="w-full h-full flex items-center justify-center p-4">
+              {/* UPDATED: Video styling to remove black bars */}
               <video
                 key={tabs[activeTab].videoSrc}
-                className="w-auto h-full max-h-[70vh] max-w-full rounded-lg"
+                className="w-full h-full object-cover max-w-md rounded-lg shadow-2xl"
                 autoPlay
                 loop
                 muted
@@ -108,13 +81,18 @@ export default function Home() {
 
             {/* RIGHT COLUMN: INTERACTIVE AREA */}
             <div className="w-full h-full flex flex-col justify-center">
-              {/* This is the container for our new "floating" UI elements */}
-              {activeTab === 0 && <ForgeHero storyState={storyState} setStoryState={setStoryState} setActiveTab={setActiveTab} setSharedResponse={setSharedResponse} />}
-              {activeTab === 1 && <SpinTale storyState={storyState} setStoryState={setStoryState} setActiveTab={setActiveTab} setSharedResponse={setSharedResponse} />}
-              {activeTab === 2 && <BindBook storyState={storyState} setStoryState={setStoryState} setActiveTab={setActiveTab} setSharedResponse={setSharedResponse} resetApp={resetApp} />}
+              
+              {/* RESTORED: The Keeper's dialogue box */}
+              <div id="shared-response-box" className="w-full max-w-md mx-auto min-h-[100px] bg-black/20 backdrop-blur-sm border border-stone-500/50 rounded-lg p-6 mb-8 text-stone-200 shadow-lg text-center text-lg">
+                  {sharedResponse}
+              </div>
+
+              {/* The components will now render inside this container */}
+              {activeTab === 0 && <ForgeHero setSharedResponse={setSharedResponse} />}
+              {activeTab === 1 && <SpinTale setSharedResponse={setSharedResponse} />}
+              {activeTab === 2 && <BindBook setSharedResponse={setSharedResponse} resetApp={resetApp} />}
             </div>
         </main>
-
       </div>
     </div>
   );
@@ -126,7 +104,7 @@ export default function Home() {
         <link rel="icon" href="/favicon.ico" />
         <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700;900&family=Lato:wght@400;700&display=swap" rel="stylesheet" />
       </Head>
-      {showLandingPage ? <LandingPage email={email} setEmail={setEmail} showLandingPage={showLandingPage} setShowLandingPage={setShowLandingPage} isVideoFinished={isVideoFinished} setIsVideoFinished={setIsVideoFinished} handleSignUpSubmit={handleSignUpSubmit} showPasswordInput={showPasswordInput} setShowPasswordInput={setShowPasswordInput} adminPasswordInput={adminPasswordInput} setAdminPasswordInput={setAdminPasswordInput} handleAdminLogin={handleAdminLogin} /> : renderAppInterface()}
+      {showLandingPage ? <LandingPage email={email} setEmail={setEmail} showLandingPage={showLandingPage} setShowLandingPage={setShowLandingPage} isVideoFinished={isVideoFinished} setIsVideoFinished={setIsVideoFinished} handleSignUpSubmit={handleSignUpSubmit} showPasswordInput={showPasswordInput} setShowPasswordInput={setShowPasswordInput} adminPasswordInput={adminPasswordInput} setAdminPasswordInput={setAdminPasswordInput} handleAdminLogin={handleAdminLogin} /> : <div />}
     </>
   );
 }
