@@ -68,28 +68,28 @@ export default function Home() {
           </div>
         </header>
         
-        <main className="flex-1 flex items-center justify-center p-8">
-            <div className="w-full max-w-7xl flex items-center justify-center">
-                <div className="w-1/2 flex justify-center">
-                    {/* FIXED: Removed the conflicting max-w-md style */}
-                    <video
-                        key={tabs[activeTab].videoSrc}
-                        className="w-full h-full object-cover rounded-lg shadow-2xl"
-                        autoPlay
-                        loop
-                        muted
-                        playsInline
-                    >
-                        <source src={tabs[activeTab].videoSrc} type="video/mp4" />
-                        Your browser does not support the video tag.
-                    </video>
-                </div>
+        {/* NEW, MORE ROBUST LAYOUT */}
+        <main className="flex-1 relative">
+            {/* The video now has a clearly defined space */}
+            <div className="absolute left-0 top-0 h-full w-1/2 flex items-center justify-center p-8">
+                <video
+                    key={tabs[activeTab].videoSrc}
+                    className="w-full h-full object-cover rounded-2xl shadow-2xl"
+                    autoPlay
+                    loop
+                    muted
+                    playsInline
+                >
+                    <source src={tabs[activeTab].videoSrc} type="video/mp4" />
+                    Your browser does not support the video tag.
+                </video>
+            </div>
 
-                <div className="w-1/2 -ml-32">
-                    {activeTab === 0 && <ForgeHero storyState={storyState} setStoryState={setStoryState} setActiveTab={setActiveTab} setSharedResponse={setSharedResponse} sharedResponse={sharedResponse} />}
-                    {activeTab === 1 && <SpinTale storyState={storyState} setStoryState={setStoryState} setActiveTab={setActiveTab} setSharedResponse={setSharedResponse} />}
-                    {activeTab === 2 && <BindBook storyState={storyState} setStoryState={setStoryState} setActiveTab={setActiveTab} setSharedResponse={setSharedResponse} resetApp={resetApp} />}
-                </div>
+            {/* The interactive area also has a clearly defined space */}
+            <div className="absolute right-0 top-0 h-full w-1/2 flex items-center justify-center p-8">
+                {activeTab === 0 && <ForgeHero storyState={storyState} setStoryState={setStoryState} setActiveTab={setActiveTab} setSharedResponse={setSharedResponse} sharedResponse={sharedResponse} />}
+                {activeTab === 1 && <SpinTale storyState={storyState} setStoryState={setStoryState} setActiveTab={setActiveTab} setSharedResponse={setSharedResponse} />}
+                {activeTab === 2 && <BindBook storyState={storyState} setStoryState={setStoryState} setActiveTab={setActiveTab} setSharedResponse={setSharedResponse} resetApp={resetApp} />}
             </div>
         </main>
       </div>
