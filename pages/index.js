@@ -8,9 +8,7 @@ import SpinTale from '../components/SpinTale';
 import BindBook from '../components/BindBook';
 import useAdminAuth from '../hooks/useAdminAuth';
 
-const initialStoryState = {
-  // ... initial state data
-};
+const initialStoryState = { /* ... */ };
 
 export default function Home() {
   const [email, setEmail] = useState('');
@@ -61,19 +59,17 @@ export default function Home() {
       <div className="relative z-10 flex flex-col min-h-screen">
         <header className="bg-transparent py-4">
           <div className="max-w-screen-2xl mx-auto px-8 flex justify-between items-center">
-            <h1 className="text-4xl sm:text-5xl font-extrabold text-stone-200" style={{ fontFamily: 'Cinzel', serif, textShadow: '0 0 5px rgba(255, 255, 255, 0.2)' }}>
+            {/* FIXED: Corrected fontFamily syntax */}
+            <h1 className="text-4xl sm:text-5xl font-extrabold text-stone-200" style={{ fontFamily: 'Cinzel, serif', textShadow: '0 0 5px rgba(255, 255, 255, 0.2)' }}>
               StorySmith
             </h1>
             <nav><ul className="flex space-x-6"><li><a href="#" onClick={(e) => { e.preventDefault(); resetApp(); }} className="text-gray-300 hover:text-white transition-colors">Home</a></li></ul></nav>
           </div>
         </header>
         
-        {/* FINAL, ROBUST LAYOUT */}
-        <main className="flex-1 grid grid-cols-1 md:grid-cols-2 gap-8 items-center p-8">
-            {/* Left Column for the Video */}
-            <div className="w-full flex justify-center items-center">
-                {/* This container sets a 16:9 aspect ratio, preventing collapse */}
-                <div className="w-full max-w-xl aspect-video relative rounded-2xl shadow-2xl overflow-hidden">
+        <main className="flex-1 relative">
+            <div className="absolute left-0 top-0 bottom-0 w-1/2 flex items-center justify-center p-8">
+                <div className="w-full h-full relative">
                     <video
                         key={tabs[activeTab].videoSrc}
                         className="absolute top-0 left-0 w-full h-full object-cover"
@@ -88,8 +84,7 @@ export default function Home() {
                 </div>
             </div>
 
-            {/* Right Column for the Interactive Area */}
-            <div className="w-full h-full flex justify-center items-center">
+            <div className="absolute right-0 top-0 bottom-0 w-1/2 flex items-center justify-center p-8">
                 {activeTab === 0 && <ForgeHero storyState={storyState} setStoryState={setStoryState} setActiveTab={setActiveTab} setSharedResponse={setSharedResponse} sharedResponse={sharedResponse} />}
                 {activeTab === 1 && <SpinTale storyState={storyState} setStoryState={setStoryState} setActiveTab={setActiveTab} setSharedResponse={setSharedResponse} />}
                 {activeTab === 2 && <BindBook storyState={storyState} setStoryState={setStoryState} setActiveTab={setActiveTab} setSharedResponse={setSharedResponse} resetApp={resetApp} />}
