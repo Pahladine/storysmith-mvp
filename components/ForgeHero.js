@@ -20,7 +20,6 @@ export default function ForgeHero({
     type: '', name: '', age: '', gender: '', traits: 'brave and kind', wardrobe: '', signatureItem: '', photoFile: null,
   });
 
-  // Use the new custom hook to handle all API logic and states
   const {
       isImageLoading_local,
       isNameLoading,
@@ -57,6 +56,7 @@ export default function ForgeHero({
           setCurrentQuestion('name');
       } else if (type === 'surprise') {
           generateSurpriseHero('fictional');
+          setSharedResponse("A hero, conjured from the void!");
       }
   };
   
@@ -210,15 +210,20 @@ export default function ForgeHero({
             </div>
         );
       default:
-        return null;
+        // Fallback for unhandled states
+        return <div className="text-center text-stone-700">An unexpected state has occurred. Please refresh the page.</div>;
     }
   }
 
   const renderStepContent = () => {
     if (isHeroSurpriseLoading) {
-      setSharedResponse("A hero, conjured from the void!");
       return (
-        <div className="flex justify-center items-center h-[200px]"><div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-stone-400"></div></div>
+        <div className="flex justify-center items-center h-full">
+            <div className="text-center">
+                <p className="text-stone-300 mb-4">A hero, conjured from the void!</p>
+                <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-stone-400 mx-auto"></div>
+            </div>
+        </div>
       );
     }
     
