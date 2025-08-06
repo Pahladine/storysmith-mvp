@@ -29,7 +29,6 @@ export default function Home() {
   
   const [sharedResponse, setSharedResponse] = useState("");
 
-  // UPDATED this section to match your filenames
   const tabs = [
     { label: 'Forge Hero', videoSrc: '/videos/Keeper1.mp4' },
     { label: 'Spin Tale', videoSrc: '/videos/Keeper2.mp4' },
@@ -57,8 +56,6 @@ export default function Home() {
       setAdminPasswordInput('');
     }
   };
-
-  const generateImageSimulated = async (prompt, type = 'scene') => { /* ... */ };
   
   const resetApp = () => {
       setStoryState(initialStoryState);
@@ -69,28 +66,36 @@ export default function Home() {
 
   // --- RENDER LOGIC ---
   const renderAppInterface = () => (
-    <div className="min-h-screen flex flex-col text-white relative" style={{ fontFamily: 'Lato, sans-serif' }}>
+    <div className="min-h-screen flex flex-col text-white relative overflow-hidden" style={{ fontFamily: 'Lato, sans-serif' }}>
       {/* Background Image Container */}
-      <div className="absolute inset-0 z-0" style={{ backgroundImage: `url('/app-background.jpg')`, backgroundSize: 'cover', backgroundPosition: 'center', backgroundAttachment: 'fixed', filter: 'blur(4px) brightness(0.7)', transform: 'scale(1.05)' }} />
-      <div className="absolute inset-0 z-1 bg-black/30" />
+      <div 
+        className="absolute inset-0 z-0"
+        style={{
+          backgroundImage: `url('/cosmic-background.jpg')`,
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+          backgroundAttachment: 'fixed',
+        }}
+      />
+      {/* Darkening Overlay */}
+      <div className="absolute inset-0 z-1 bg-black/50" />
       
       <div className="relative z-10 flex flex-col min-h-screen">
-        <header className="bg-transparent py-4 border-b border-gray-700/50">
+        <header className="bg-transparent py-4">
           <div className="max-w-7xl mx-auto px-8 flex justify-between items-center">
             <h1 className="text-4xl sm:text-5xl font-extrabold text-stone-200" style={{ fontFamily: 'Cinzel, serif' }}>StorySmith</h1>
             <nav><ul className="flex space-x-6"><li><a href="#" onClick={(e) => { e.preventDefault(); resetApp(); }} className="text-gray-300 hover:text-white transition-colors">Home</a></li></ul></nav>
           </div>
         </header>
         
-        {/* NEW TWO-COLUMN LAYOUT */}
-        <main className="flex-1 py-12 px-4 sm:px-8">
-          <div className="max-w-7xl mx-auto h-full grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+        {/* NEW IMMERSIVE LAYOUT */}
+        <main className="flex-1 grid grid-cols-1 md:grid-cols-2 gap-8 items-center justify-items-center p-8">
 
-            {/* NEW LEFT COLUMN: CHARACTER VIDEO PLAYER */}
-            <div className="w-full h-full flex items-center justify-center">
+            {/* LEFT COLUMN: LARGER CHARACTER VIDEO PLAYER */}
+            <div className="w-full h-full flex items-center justify-center p-4">
               <video
-                key={tabs[activeTab].videoSrc} // The key prop forces the video to re-render on change
-                className="w-full h-full object-cover max-w-md rounded-lg shadow-2xl"
+                key={tabs[activeTab].videoSrc}
+                className="w-auto h-full max-h-[70vh] max-w-full rounded-lg"
                 autoPlay
                 loop
                 muted
@@ -101,33 +106,15 @@ export default function Home() {
               </video>
             </div>
 
-            {/* RIGHT COLUMN: INTERACTIVE CARD */}
-            <div className="flex-1 flex flex-col bg-gray-800/50 backdrop-blur-sm border border-stone-500/30 rounded-2xl shadow-2xl p-6 sm:p-8">
-              <h2 className="text-3xl font-semibold mb-6 text-center text-stone-200" style={{ fontFamily: 'Cinzel, serif' }}>Forge Your Story</h2>
-              <div className="flex justify-center mb-8 space-x-2 sm:space-x-4">
-                {tabs.map((tab, index) => (
-                  <button key={index} onClick={() => setActiveTab(index)}
-                    className={`px-4 sm:px-6 py-3 rounded-full text-base sm:text-lg font-medium transition-all duration-300 ${activeTab === index ? 'bg-stone-700 text-white shadow-lg border border-stone-500' : 'bg-gray-700/50 text-gray-300 hover:bg-gray-700/80'}`}>
-                    {tab.label}
-                  </button>
-                ))}
-              </div>
-              <div id="shared-response-box" className="min-h-[100px] bg-gray-900/70 rounded-lg p-6 mb-6 text-gray-100 shadow-inner border border-stone-600/50">
-                  {sharedResponse}
-              </div>
-
+            {/* RIGHT COLUMN: INTERACTIVE AREA */}
+            <div className="w-full h-full flex flex-col justify-center">
+              {/* This is the container for our new "floating" UI elements */}
               {activeTab === 0 && <ForgeHero storyState={storyState} setStoryState={setStoryState} setActiveTab={setActiveTab} setSharedResponse={setSharedResponse} />}
               {activeTab === 1 && <SpinTale storyState={storyState} setStoryState={setStoryState} setActiveTab={setActiveTab} setSharedResponse={setSharedResponse} />}
               {activeTab === 2 && <BindBook storyState={storyState} setStoryState={setStoryState} setActiveTab={setActiveTab} setSharedResponse={setSharedResponse} resetApp={resetApp} />}
             </div>
-          </div>
         </main>
 
-        <footer className="bg-transparent py-8 mt-auto">
-          <div className="max-w-7xl mx-auto px-8 text-center text-gray-400 text-sm">
-            &copy; 2025 StorySmith. All rights reserved.
-          </div>
-        </footer>
       </div>
     </div>
   );

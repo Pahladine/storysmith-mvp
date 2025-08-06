@@ -2,11 +2,18 @@
 
 import { useState, useEffect } from 'react';
 
-export default function SpinTale({ storyState, setStoryState, setActiveTab, isLoading, isImageLoading }) {
+export default function SpinTale({ storyState, setStoryState, setActiveTab, setSharedResponse, isLoading, isImageLoading }) {
   const [currentSpinTaleStep, setCurrentSpinTaleStep] = useState(0);
   const [currentSceneIndex, setCurrentSceneIndex] = useState(0);
   const [hasStartedSpinTale, setHasStartedSpinTale] = useState(false);
-  const [response, setResponse] = useState('');
+  
+  // Use a local state for this component's specific messages
+  const [localResponse, setLocalResponse] = useState('');
+
+  // Update the parent's shared response box whenever the local one changes
+  useEffect(() => {
+    setSharedResponse(localResponse);
+  }, [localResponse]);
 
   const hasBlueprintData = storyState.story_content?.StoryBlueprintBlock?.structure?.numberOfScenes > 0;
   const hasHeroData = storyState.story_content?.CharacterBlock?.character_details?.name;
@@ -28,7 +35,7 @@ export default function SpinTale({ storyState, setStoryState, setActiveTab, isLo
       sceneText = `Scene ${sceneNum}: A New Challenge. The journey continues for ${heroName}. They venture deeper into the unknown, facing unexpected twists and turns.`;
     }
 
-    setResponse(`Behold, the tale of Scene ${sceneNum} unfolds before us! Does this passage capture the magic and adventure you envision?`);
+    setLocalResponse(`Behold, the tale of Scene ${sceneNum} unfolds before us! Does this passage capture the magic and adventure you envision?`);
     setStoryState(prev => {
       const newScene = {
         scene_id: sceneNum,
@@ -51,81 +58,64 @@ export default function SpinTale({ storyState, setStoryState, setActiveTab, isLo
   };
 
   useEffect(() => {
-    if (hasBlueprintData && hasHeroData && !hasStartedSpinTale && storyState.story_content.SceneJSON_array.length === 0) {
-      setHasStartedSpinTale(true);
-      setResponse("Wonderful! With our hero forged in starlight, let us begin to spin their legendary tale!");
-      setTimeout(() => {
-        generateAndDisplayScene(1, storyState.story_content.StoryBlueprintBlock.structure.numberOfScenes, storyState.story_content.CharacterBlock.character_details);
-      }, 1500);
+    // Only run this logic if the active tab is 'Spin Tale'
+    if (setActiveTab && hasBlueprintData && hasHeroData && !hasStartedSpinTale) {
+        setHasStartedSpinTale(true);
+        setLocalResponse("Wonderful! With our hero forged in starlight, let us begin to spin their legendary tale!");
+        setTimeout(() => {
+            generateAndDisplayScene(1, storyState.story_content.StoryBlueprintBlock.structure.numberOfScenes, storyState.story_content.CharacterBlock.character_details);
+        }, 1500);
     }
-  }, [hasBlueprintData, hasHeroData, hasStartedSpinTale, storyState]);
+  }, [hasBlueprintData, hasHeroData, hasStartedSpinTale, setActiveTab]);
 
   if (!hasBlueprintData || !hasHeroData) {
-    return (
-      <div className="text-center text-gray-200">
-        <p className="text-xl mb-4">It seems our story's hero or blueprint is not yet forged!</p>
-        <p>Please return to the "Forge Hero" tab to begin your adventure.</p>
-      </div>
-    );
+    setSharedResponse("It seems our story's hero or blueprint is not yet forged! Please return to the 'Forge Hero' tab to begin your adventure.");
+    return null; // Return null to render nothing if conditions aren't met
   }
 
   const totalScenes = storyState.story_content.StoryBlueprintBlock.structure.numberOfScenes;
   const hero = storyState.story_content.CharacterBlock.character_details;
   const currentScene = storyState.story_content.SceneJSON_array[currentSceneIndex];
 
-  switch (currentSpinTaleStep) {
-    case 0:
-      return (
-        <div className="text-center">
-          <p className="text-xl mb-6 text-gray-200">Preparing to spin the tale...</p>
-          <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-indigo-500 mx-auto"></div>
-        </div>
-      );
-    case 1:
-      if (!currentScene) {
-        return (
-          <div className="text-center text-gray-200">
-            <p className="text-xl mb-4">Generating scene...</p>
-            <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-indigo-500 mx-auto"></div>
-          </div>
-        );
-      }
-      return (
-        <div className="space-y-4">
-          <div className="max-h-60 overflow-y-auto pr-2 custom-scrollbar">
-            {storyState.story_content.SceneJSON_array.slice(0, currentSceneIndex).map((scene, idx) => (
-              <div key={idx} className="bg-gray-800 rounded-lg p-4 mb-4 border border-gray-600 opacity-75">
-                <h4 className="text-lg font-semibold text-gray-300 mb-2">{scene.scene_title}</h4>
-                <p className="text-sm text-gray-200 whitespace-pre-wrap">{scene.scene_full_text}</p>
-              </div>
-            ))}
-          </div>
-          <h3 className="text-2xl font-semibold text-indigo-300 mb-4 text-center">Current: {currentScene.scene_title}</h3>
-          <div className="bg-gray-900 rounded-lg p-6 border border-gray-700 min-h-[150px]">
-            <p className="whitespace-pre-wrap text-base leading-relaxed text-gray-100">{currentScene.scene_full_text}</p>
-          </div>
-          <div className="bg-gray-900 border border-gray-700 rounded-lg p-4 flex justify-center items-center min-h-[200px] mb-6">
-            <p className="text-gray-400">Scene Illustration Placeholder</p>
-          </div>
-          <div className="flex flex-col sm:flex-row justify-center space-y-4 sm:space-y-0 sm:space-x-4 mt-6">
-            <button onClick={() => {
-              const nextSceneIndex = currentSceneIndex + 1;
-              if (nextSceneIndex < totalScenes) {
-                setCurrentSceneIndex(nextSceneIndex);
-                generateAndDisplayScene(nextSceneIndex + 1, totalScenes, hero);
-              } else {
-                setActiveTab(2);
-              }
-            }} className="px-6 py-3 bg-indigo-600 rounded-lg text-white font-semibold shadow-md hover:bg-indigo-700 transition duration-300" disabled={isLoading || isImageLoading}>
-              Yes, this scene is perfect!
-            </button>
-            <button className="px-6 py-3 bg-gray-600 rounded-lg text-gray-200 font-semibold shadow-md hover:bg-gray-500 transition duration-300" disabled={isLoading || isImageLoading}>
-              Not quite, let’s refine this scene.
-            </button>
-          </div>
-        </div>
-      );
-    default:
-      return null;
-  }
+  // We will now use the new floating UI style from ForgeHero.js
+  const choiceButtonStyle = "w-full max-w-md text-left p-4 bg-black/20 backdrop-blur-sm border border-stone-500/50 rounded-lg text-stone-200 hover:bg-stone-700/70 hover:border-stone-400 transition-all duration-300 shadow-lg";
+
+  return (
+    <div className="h-full w-full flex flex-col justify-end p-8">
+        {!currentScene ? (
+            <div className="text-center text-stone-300">
+                <p>Preparing to spin the tale...</p>
+            </div>
+        ) : (
+            <div className="w-full max-w-md mx-auto space-y-4">
+                <div className="bg-black/20 backdrop-blur-sm border border-stone-500/50 rounded-lg p-4 text-stone-200 text-center mb-4">
+                  <h3 className="text-xl font-bold" style={{ fontFamily: 'Cinzel, serif' }}>{currentScene.scene_title}</h3>
+                  <p className="mt-2 text-stone-300">{currentScene.scene_full_text}</p>
+                </div>
+                <button 
+                  onClick={() => {
+                    const nextSceneIndex = currentSceneIndex + 1;
+                    if (nextSceneIndex < totalScenes) {
+                      setCurrentSceneIndex(nextSceneIndex);
+                      generateAndDisplayScene(nextSceneIndex + 1, totalScenes, hero);
+                    } else {
+                      // Move to the next act when all scenes are done
+                      setActiveTab(2); 
+                    }
+                  }} 
+                  className={choiceButtonStyle}
+                  disabled={isLoading}
+                >
+                  Yes, this scene is perfect!
+                </button>
+                <button 
+                  className={choiceButtonStyle}
+                  disabled={isLoading}
+                >
+                  Not quite, let’s refine this scene.
+                </button>
+            </div>
+        )}
+    </div>
+  );
 }
