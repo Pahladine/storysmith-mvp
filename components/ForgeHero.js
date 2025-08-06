@@ -1,7 +1,7 @@
 // components/ForgeHero.js
 
 import { useState, useEffect } from 'react';
-import { conversation } from './forgeHeroContent'; // Import the new content
+import { conversation } from './forgeHeroContent';
 
 export default function ForgeHero({
   storyState,
@@ -75,11 +75,52 @@ export default function ForgeHero({
     // Handle special input cases
     switch (currentQuestion) {
       case 'name_provide':
-        // ... name input logic
+        setSharedResponse("A wonderful choice! Please, share the name with me.");
+        return (
+          <div className="flex flex-col items-center space-y-4">
+            <input 
+              type="text" 
+              value={userProvidedName} 
+              onChange={(e) => setUserProvidedName(e.target.value)} 
+              className="w-full p-3 rounded-lg bg-white/50 text-stone-800 placeholder-stone-600 focus:outline-none focus:ring-2 focus:ring-stone-500 border border-stone-400" 
+              placeholder="Enter hero's name..."
+            />
+            <button 
+              className={choiceButtonStyle} 
+              onClick={() => handleQuestionAnswer('name', userProvidedName, 'age')}
+            >
+              Confirm Name
+            </button>
+          </div>
+        );
       case 'age_provide':
-        // ... age input logic
+        setSharedResponse("Wonderful! How old is our hero?");
+        return (
+          <div className="flex flex-col items-center space-y-4">
+            <input 
+              type="number" 
+              value={userProvidedAge} 
+              onChange={(e) => setUserProvidedAge(e.target.value)} 
+              className="w-full p-3 rounded-lg bg-white/50 text-stone-800 placeholder-stone-600 focus:outline-none focus:ring-2 focus:ring-stone-500 border border-stone-400" 
+              placeholder="Enter hero's age..."
+            />
+            <button 
+              className={choiceButtonStyle} 
+              onClick={() => handleQuestionAnswer('age', userProvidedAge, 'gender')}
+            >
+              Confirm Age
+            </button>
+          </div>
+        );
+      // Fallback for final step
       case 'traits':
-        // ... final step logic
+        setSharedResponse("With our hero's core details captured, we are ready to forge their portrait!");
+        return (
+            <div className="text-center">
+                <p className="text-stone-700 mb-6">All details collected! Ready to generate the hero's portrait.</p>
+                <button className={`${choiceButtonStyle} text-center`}>Forge My Hero!</button>
+            </div>
+        );
       default:
         return null;
     }

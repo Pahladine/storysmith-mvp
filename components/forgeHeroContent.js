@@ -4,8 +4,8 @@ export const conversation = {
   name: {
     question: "And what name shall the heralds sing for this hero of ours?",
     choices: [
-      { text: "1. I have a name in mind!", action: 'user_provides' },
-      { text: "2. I'd like you to suggest a few fitting names!", action: 'ai_suggests' },
+      { text: "1. I have a name in mind!", action: 'name_provide' },
+      { text: "2. I'd like you to suggest a few fitting names!", action: 'name_suggestions' }, // <-- This line was fixed
       { text: "3. Let's make up a whimsical fantasy name together!", action: 'ai_whimsical' },
       { text: "4. Surprise me, StorySmith!", action: 'ai_surprise' }
     ]
@@ -16,7 +16,7 @@ export const conversation = {
       { text: "Rowan", field: 'name', value: 'Rowan', next: 'age' },
       { text: "Elara", field: 'name', value: 'Elara', next: 'age' },
       { text: "Finn", field: 'name', value: 'Finn', next: 'age' },
-      { text: "None of these, let me see other options.", action: 'name' }
+      { text: "None of these, let's go back.", action: 'name' }
     ]
   },
   age: {
