@@ -192,7 +192,7 @@ export default function ForgeHero({
                                 }
                                 setCurrentQuestion(choice.action);
                             } else {
-                                handleQuestionAnswer(choice.field, choice.value, choice.next);
+                                handleQuestionAnswer('name', choice.value, choice.next);
                             }
                         }}
                     >
