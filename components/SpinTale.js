@@ -103,6 +103,16 @@ export default function SpinTale({ storyState, setStoryState, setActiveTab, setS
       </div>
     );
   }
+  
+  if (!hasBlueprintData) {
+    // This state is now handled by the isGeneratingBlueprint check above.
+    // This return is a safety net but should not be reached with the fix.
+    return (
+      <div className="h-full w-full flex flex-col justify-end p-8 text-center text-stone-300">
+        <p>Awaiting the story blueprint... The magic is at work!</p>
+      </div>
+    );
+  }
 
   const totalScenes = storyState.story_content.StoryBlueprintBlock.structure.numberOfScenes;
   const hero = storyState.story_content.CharacterBlock.character_details;
