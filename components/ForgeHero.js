@@ -175,6 +175,24 @@ export default function ForgeHero({
                 </button>
             </div>
         );
+      case 'ai_whimsical':
+        setSharedResponse("By the power of starlight, a name is born!");
+        // We'll simulate a name generation here and move on.
+        setTimeout(() => {
+          handleQuestionAnswer('name', 'Whimsicap', 'age');
+        }, 1000);
+        return (
+          <div className="flex justify-center items-center h-[200px]"><div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-stone-400"></div></div>
+        );
+      case 'ai_surprise':
+        setSharedResponse("A name, chosen by fate!");
+        // We'll simulate a name generation here and move on.
+        setTimeout(() => {
+          handleQuestionAnswer('name', 'Starlight', 'age');
+        }, 1000);
+        return (
+          <div className="flex justify-center items-center h-[200px]"><div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-stone-400"></div></div>
+        );
       default:
         return null;
     }
