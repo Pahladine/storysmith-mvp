@@ -53,7 +53,7 @@ export default function Home() {
     setSharedResponse("");
   };
 
-  const renderAppInterface = () => (
+const renderAppInterface = () => (
     <div className="min-h-screen flex flex-col text-white relative overflow-hidden" style={{ fontFamily: 'Lato, sans-serif' }}>
       {/* Dynamic Background System */}
       <div className="absolute inset-0 z-0">
@@ -85,20 +85,22 @@ export default function Home() {
         
         <main className="flex-1 grid grid-cols-1 md:grid-cols-2 gap-8 items-center p-8">
             <div className="w-full h-full flex justify-center items-center">
-    <div className="w-full max-w-full aspect-video md:aspect-auto md:h-full relative rounded-2xl shadow-2xl overflow-hidden">
-        <video
-            key={tabs[activeTab].videoSrc}
-            className="absolute top-0 left-0 w-full h-full object-cover"
-            autoPlay
-            loop
-            muted
-            playsInline
-        >
-            <source src={tabs[activeTab].videoSrc} type="video/mp4" />
-            Your browser does not support the video tag.
-        </video>
-    </div>
-</div>
+                {/* --- CORRECTED CODE STARTS HERE --- */}
+                <div className="w-full h-full max-h-[80vh] relative rounded-2xl shadow-2xl overflow-hidden">
+                    <video
+                        key={tabs[activeTab].videoSrc}
+                        className="absolute top-0 left-0 w-full h-full object-cover"
+                        autoPlay
+                        loop
+                        muted
+                        playsInline
+                    >
+                        <source src={tabs[activeTab].videoSrc} type="video/mp4" />
+                        Your browser does not support the video tag.
+                    </video>
+                </div>
+                {/* --- CORRECTED CODE ENDS HERE --- */}
+            </div>
             <div className="w-full h-full flex justify-center items-center">
                 {activeTab === 0 && <ForgeHero storyState={storyState} setStoryState={setStoryState} setActiveTab={setActiveTab} setSharedResponse={setSharedResponse} sharedResponse={sharedResponse} />}
                 {activeTab === 1 && <SpinTale storyState={storyState} setStoryState={setStoryState} setActiveTab={setActiveTab} setSharedResponse={setSharedResponse} />}

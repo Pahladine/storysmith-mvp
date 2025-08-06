@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { conversation } from './forgeHeroContent';
+import useForgeHeroApis from '../hooks/useForgeHeroApis';
 
 export default function ForgeHero({
   storyState,
@@ -10,80 +11,39 @@ export default function ForgeHero({
   setSharedResponse,
   sharedResponse,
 }) {
-  const [isImageLoading_local, setIsImageLoading_local] = useState(false);
-  const [isNameLoading, setIsNameLoading] = useState(false);
   const [currentForgeHeroStep, setCurrentForgeHeroStep] = useState(0);
   const [currentQuestion, setCurrentQuestion] = useState('start');
   const [userProvidedName, setUserProvidedName] = useState('');
   const [userProvidedAge, setUserProvidedAge] = useState('');
-
+  
   const [heroDetails, setHeroDetails] = useState({
     type: '', name: '', age: '', gender: '', traits: 'brave and kind', wardrobe: '', signatureItem: '', photoFile: null,
   });
-  const [heroImageUrl, setHeroImageUrl] = useState('');
-  const [uploadedImageUrl, setUploadedImageUrl] = useState('');
-  const [generatedName, setGeneratedName] = useState('');
+
+  // Use the new custom hook to handle all API logic and states
+  const {
+      isImageLoading_local,
+      isNameLoading,
+      isHeroSurpriseLoading,
+      heroImageUrl,
+      setHeroImageUrl,
+      generatedName,
+      setGeneratedName,
+      suggestedNames,
+      setSuggestedNames,
+      surpriseHeroDetails,
+      setSurpriseHeroDetails,
+      generateRealImage,
+      generateAIName,
+      generateSuggestedNames,
+      generateSurpriseHero,
+  } = useForgeHeroApis(heroDetails, setSharedResponse);
 
   useEffect(() => {
     if (currentForgeHeroStep === 0) {
         setSharedResponse("Welcome, brave adventurer! To begin our grand tale, tell me, from where shall our hero emerge?");
     }
   }, [currentForgeHeroStep, setSharedResponse]);
-
-  const generateRealImage = async (prompt) => {
-    setIsImageLoading_local(true);
-    setSharedResponse("The forge hums with power... a new image is being crafted!");
-    
-    try {
-      const response = await fetch('/api/generateImage', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ prompt }),
-      });
-
-      if (!response.ok) {
-        throw new Error('Image generation failed on the server.');
-      }
-      
-      const data = await response.json();
-      setHeroImageUrl(data.imageUrl);
-      setSharedResponse("Behold, the hero’s face shines with living light! ✨🖼️");
-
-    } catch (error) {
-      console.error("Image generation failed:", error);
-      setSharedResponse("The forge has grown cold. An error occurred.");
-      setHeroImageUrl(null);
-    } finally {
-      setIsImageLoading_local(false);
-    }
-  };
-  
-  const generateAIName = async (type) => {
-    setIsNameLoading(true);
-    setSharedResponse("By the power of starlight, a name is born!");
-    
-    try {
-      const response = await fetch('/api/generateName', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ type, gender: heroDetails.gender }),
-      });
-
-      if (!response.ok) {
-        throw new Error('Name generation failed.');
-      }
-
-      const data = await response.json();
-      setGeneratedName(data.name);
-      setSharedResponse(`Behold! The hero's name is ${data.name}! Do you approve?`);
-    } catch (error) {
-      console.error("Name generation failed:", error);
-      setSharedResponse("The magical winds are silent. An error occurred.");
-      setGeneratedName('');
-    } finally {
-      setIsNameLoading(false);
-    }
-  };
 
   const handlePhotoFileChange = async (event) => { /* ... */ };
 
@@ -96,7 +56,7 @@ export default function ForgeHero({
           setCurrentForgeHeroStep(2);
           setCurrentQuestion('name');
       } else if (type === 'surprise') {
-          // ... surprise logic
+          generateSurpriseHero('fictional');
       }
   };
   
@@ -105,19 +65,14 @@ export default function ForgeHero({
     setCurrentQuestion(nextQuestion);
   };
   
-  const handleNameChoice = (choice) => {
-      if (choice === 'user_provides') {
-          setCurrentQuestion('name_provide');
-      } else if (choice === 'ai_suggests') {
-          setCurrentQuestion('name_suggestions');
-      } else {
-          handleQuestionAnswer('name', 'Glimmerhart', 'age');
-      }
-  };
-
   const handleNameConfirmation = (name) => {
     handleQuestionAnswer('name', name, 'age');
     setGeneratedName('');
+  };
+
+  const handleSuggestedNameSelection = (name) => {
+    handleQuestionAnswer('name', name, 'age');
+    setSuggestedNames([]);
   };
 
   const constructHeroPrompt = (details) => {
@@ -148,11 +103,10 @@ export default function ForgeHero({
         }
     }));
     
-    // Set the transition message before changing the tab
     setSharedResponse("🎉 Your hero is forged! The first chapter of creation is complete! 🎉");
     setTimeout(() => {
-      setActiveTab(1); // Move to the next tab (Spin Tale)
-    }, 1500); // Wait 1.5 seconds for the message to be read
+      setActiveTab(1);
+    }, 1500);
   };
   
   const choiceButtonStyle = "w-full text-left p-4 bg-black/10 border border-black/20 rounded-lg text-stone-800 hover:bg-black/20 transition-all duration-300 shadow-sm font-semibold disabled:opacity-50 disabled:cursor-not-allowed";
@@ -169,6 +123,28 @@ export default function ForgeHero({
       );
     }
     
+    if (currentQuestion === 'name_suggestions') {
+      if (isNameLoading) {
+        setSharedResponse("The winds of inspiration whisper... what names shall they carry?");
+        return (
+          <div className="flex justify-center items-center h-[200px]"><div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-stone-400"></div></div>
+        );
+      }
+      setSharedResponse(conversation.name_suggestions.question);
+      return (
+        <div className="flex flex-col items-center space-y-4">
+          {suggestedNames.map((name, index) => (
+            <button key={index} className={choiceButtonStyle} onClick={() => handleSuggestedNameSelection(name)}>
+              {name}
+            </button>
+          ))}
+          <button className={choiceButtonStyle} onClick={() => setCurrentQuestion('name')}>
+            None of these, let's go back.
+          </button>
+        </div>
+      );
+    }
+
     const currentStep = conversation[currentQuestion];
     if (currentStep) {
         setSharedResponse(currentStep.question);
@@ -184,9 +160,10 @@ export default function ForgeHero({
                             if (choice.action) {
                                 if (choice.action === 'ai_whimsical' || choice.action === 'ai_surprise') {
                                     generateAIName(choice.action.split('_')[1]);
-                                } else {
-                                    setCurrentQuestion(choice.action);
+                                } else if (choice.action === 'name_suggestions') {
+                                    generateSuggestedNames();
                                 }
+                                setCurrentQuestion(choice.action);
                             } else {
                                 handleQuestionAnswer(choice.field, choice.value, choice.next);
                             }
@@ -200,7 +177,6 @@ export default function ForgeHero({
     }
     
     if (isNameLoading) {
-      setSharedResponse("By the power of starlight, a name is born!");
       return (
         <div className="flex justify-center items-center h-[200px]"><div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-stone-400"></div></div>
       );
@@ -239,6 +215,34 @@ export default function ForgeHero({
   }
 
   const renderStepContent = () => {
+    if (isHeroSurpriseLoading) {
+      setSharedResponse("A hero, conjured from the void!");
+      return (
+        <div className="flex justify-center items-center h-[200px]"><div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-stone-400"></div></div>
+      );
+    }
+    
+    if (surpriseHeroDetails) {
+        setSharedResponse("Behold! A magnificent hero has appeared! Do these details sing true to your heart?");
+        return (
+            <div className="text-center space-y-4">
+                <p className="text-stone-800 text-lg font-bold" style={{ fontFamily: 'Cinzel, serif' }}>{surpriseHeroDetails.name}, the {surpriseHeroDetails.gender}</p>
+                <p className="text-stone-700 text-sm">{surpriseHeroDetails.age}-years-old, {surpriseHeroDetails.traits.join(', ')}</p>
+                <p className="text-stone-700 text-sm">Wearing: {surpriseHeroDetails.wardrobe}</p>
+                <p className="text-stone-700 text-sm">Holding: {surpriseHeroDetails.signature_item}</p>
+                <button onClick={() => {
+                    setHeroDetails(surpriseHeroDetails);
+                    setSurpriseHeroDetails(null);
+                    handleForgeHeroSubmit(surpriseHeroDetails);
+                }} className={choiceButtonStyle}>Yes, that’s perfect!</button>
+                <button onClick={() => {
+                    setSurpriseHeroDetails(null);
+                    setCurrentForgeHeroStep(0);
+                }} className={choiceButtonStyle}>Not quite, let's go back.</button>
+            </div>
+        );
+    }
+
     switch (currentForgeHeroStep) {
       case 0:
         return (
