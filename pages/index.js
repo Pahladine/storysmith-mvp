@@ -71,10 +71,10 @@ export default function Home() {
         <main className="flex-1 flex items-center justify-center p-8">
             <div className="w-full max-w-7xl flex items-center justify-center">
                 <div className="w-1/2 flex justify-center">
-                    {/* FIXED: Restored the correct video player styling */}
+                    {/* FIXED: Removed the conflicting max-w-md style */}
                     <video
                         key={tabs[activeTab].videoSrc}
-                        className="w-full h-full object-cover max-w-md rounded-lg shadow-2xl"
+                        className="w-full h-full object-cover rounded-lg shadow-2xl"
                         autoPlay
                         loop
                         muted
