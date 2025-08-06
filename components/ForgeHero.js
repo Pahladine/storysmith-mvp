@@ -28,17 +28,33 @@ export default function ForgeHero({
     }
   }, [currentForgeHeroStep, setSharedResponse]);
 
+  // This function now calls the new backend API route
   const generateRealImage = async (prompt) => {
     setIsImageLoading_local(true);
-    // Simulate an API call delay
-    await new Promise(resolve => setTimeout(resolve, 2000));
+    setSharedResponse("The forge hums with power... a new image is being crafted!");
     
-    // UPDATED: Set a more reliable placeholder image URL
-    const placeholderUrl = "https://placehold.co/600x600/png"; 
-    setHeroImageUrl(placeholderUrl);
-    setSharedResponse("Behold, your hero’s face shines with living light!");
+    try {
+      const response = await fetch('/api/generateImage', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ prompt }),
+      });
 
-    setIsImageLoading_local(false);
+      if (!response.ok) {
+        throw new Error('Image generation failed on the server.');
+      }
+      
+      const data = await response.json();
+      setHeroImageUrl(data.imageUrl);
+      setSharedResponse("Behold, the hero’s face shines with living light! ✨🖼️");
+
+    } catch (error) {
+      console.error("Image generation failed:", error);
+      setSharedResponse("The forge has grown cold. An error occurred.");
+      setHeroImageUrl(null);
+    } finally {
+      setIsImageLoading_local(false);
+    }
   };
   
   const handlePhotoFileChange = async (event) => { /* ... */ };
@@ -85,7 +101,20 @@ export default function ForgeHero({
       setCurrentForgeHeroStep(3);
   };
 
-  const handleForgeHeroCompletion = () => { /* ... */ };
+  const handleForgeHeroCompletion = () => {
+    setStoryState(prev => ({
+        ...prev,
+        story_content: {
+            ...prev.story_content,
+            CharacterBlock: {
+                character_details: heroDetails,
+                character_image: heroImageUrl,
+            }
+        }
+    }));
+    setActiveTab(1); // Move to the next tab (Spin Tale)
+    setSharedResponse("An excellent choice! Let us now lay the groundwork for this grand adventure!");
+  };
   
   const choiceButtonStyle = "w-full text-left p-4 bg-black/10 border border-black/20 rounded-lg text-stone-800 hover:bg-black/20 transition-all duration-300 shadow-sm font-semibold disabled:opacity-50 disabled:cursor-not-allowed";
   

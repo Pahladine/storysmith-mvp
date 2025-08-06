@@ -9,11 +9,12 @@ export default function SpinTale({ storyState, setStoryState, setActiveTab, setS
   
   // Use a local state for this component's specific messages
   const [localResponse, setLocalResponse] = useState('');
+  const [isGeneratingBlueprint, setIsGeneratingBlueprint] = useState(false);
 
   // Update the parent's shared response box whenever the local one changes
   useEffect(() => {
     setSharedResponse(localResponse);
-  }, [localResponse]);
+  }, [localResponse, setSharedResponse]);
 
   const hasBlueprintData = storyState.story_content?.StoryBlueprintBlock?.structure?.numberOfScenes > 0;
   const hasHeroData = storyState.story_content?.CharacterBlock?.character_details?.name;
@@ -56,20 +57,62 @@ export default function SpinTale({ storyState, setStoryState, setActiveTab, setS
     });
     setCurrentSpinTaleStep(1);
   };
+  
+  const generateBlueprint = async (heroDetails) => {
+    if (isGeneratingBlueprint) return;
+    setIsGeneratingBlueprint(true);
+    setLocalResponse("With our hero forged, I will now lay the groundwork for their grand adventure!");
+
+    try {
+      const response = await fetch('/api/generateBlueprint', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ heroDetails }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to generate story blueprint.');
+      }
+      const data = await response.json();
+      setStoryState(data);
+      setLocalResponse("A blueprint of our tale is prepared! Let us now begin spinning the scenes.");
+
+    } catch (error) {
+      console.error("Blueprint generation failed:", error);
+      setLocalResponse("The quill has run dry. An error occurred while preparing the tale.");
+    } finally {
+      setIsGeneratingBlueprint(false);
+    }
+  };
 
   useEffect(() => {
     // Only run this logic if the active tab is 'Spin Tale'
-    if (setActiveTab && hasBlueprintData && hasHeroData && !hasStartedSpinTale) {
-        setHasStartedSpinTale(true);
-        setLocalResponse("Wonderful! With our hero forged in starlight, let us begin to spin their legendary tale!");
-        setTimeout(() => {
-            generateAndDisplayScene(1, storyState.story_content.StoryBlueprintBlock.structure.numberOfScenes, storyState.story_content.CharacterBlock.character_details);
-        }, 1500);
+    if (!hasHeroData) {
+        setSharedResponse("It seems our hero is not yet forged! Please return to the 'Forge Hero' tab to begin your adventure.");
+    } else if (!hasBlueprintData && !isGeneratingBlueprint && !hasStartedSpinTale) {
+      setHasStartedSpinTale(true); // Flag to prevent multiple calls
+      generateBlueprint(storyState.story_content.CharacterBlock.character_details);
     }
-  }, [hasBlueprintData, hasHeroData, hasStartedSpinTale, setActiveTab]);
+  }, [hasBlueprintData, hasHeroData, hasStartedSpinTale, isGeneratingBlueprint, setSharedResponse, storyState]);
+  
+  // This useEffect ensures the first scene is generated once the blueprint is ready
+  useEffect(() => {
+    if (hasBlueprintData && hasHeroData && hasStartedSpinTale && storyState.story_content.SceneJSON_array.length === 0) {
+      setTimeout(() => {
+          generateAndDisplayScene(1, storyState.story_content.StoryBlueprintBlock.structure.numberOfScenes, storyState.story_content.CharacterBlock.character_details);
+      }, 1500);
+    }
+  }, [hasBlueprintData, hasHeroData, hasStartedSpinTale, storyState]);
+
 
   if (!hasBlueprintData || !hasHeroData) {
-    setSharedResponse("It seems our story's hero or blueprint is not yet forged! Please return to the 'Forge Hero' tab to begin your adventure.");
+    if (isGeneratingBlueprint) {
+      return (
+        <div className="h-full w-full flex flex-col justify-end p-8 text-center text-stone-300">
+          <p>Preparing the story blueprint...</p>
+        </div>
+      );
+    }
     return null; // Return null to render nothing if conditions aren't met
   }
 
