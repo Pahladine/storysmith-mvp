@@ -70,12 +70,11 @@ export default function Home() {
         
         <main className="flex-1 flex items-center justify-center p-8">
             <div className="w-full max-w-7xl flex items-center justify-center">
-                {/* Left Side: Larger Character Video */}
                 <div className="w-1/2 flex justify-center">
-                    {/* FIXED: Restored the video player code */}
+                    {/* FIXED: Restored the correct video player styling */}
                     <video
                         key={tabs[activeTab].videoSrc}
-                        className="w-auto h-[80vh] max-h-[80vh] rounded-lg"
+                        className="w-full h-full object-cover max-w-md rounded-lg shadow-2xl"
                         autoPlay
                         loop
                         muted
@@ -86,7 +85,6 @@ export default function Home() {
                     </video>
                 </div>
 
-                {/* Right Side: Overlapping Interactive Area */}
                 <div className="w-1/2 -ml-32">
                     {activeTab === 0 && <ForgeHero storyState={storyState} setStoryState={setStoryState} setActiveTab={setActiveTab} setSharedResponse={setSharedResponse} sharedResponse={sharedResponse} />}
                     {activeTab === 1 && <SpinTale storyState={storyState} setStoryState={setStoryState} setActiveTab={setActiveTab} setSharedResponse={setSharedResponse} />}
