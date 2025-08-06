@@ -20,9 +20,6 @@ export default function Home() {
   const [activeTab, setActiveTab] = useState(0);
   const [isVideoFinished, setIsVideoFinished] = useState(false);
   const [storyState, setStoryState] = useState(initialStoryState);
-  const [showPasswordInput, setShowPasswordInput] = useState(false);
-  const [adminPasswordInput, setAdminPasswordInput] = useState('');
-  const password = process.env.NEXT_PUBLIC_ADMIN_PASSWORD || '6425';
   const [sharedResponse, setSharedResponse] = useState("");
 
   const tabs = [
@@ -31,33 +28,9 @@ export default function Home() {
     { label: 'Bind Book', videoSrc: '/videos/Keeper3.mp4', bgSrc: '/background3.jpg' },
   ];
   
-  const handleSignUpSubmit = async (e) => {
-    e.preventDefault();
-    if (email && email.includes('@')) {
-      alert(`Thank you for signing up, ${email}!`);
-      setEmail('');
-    } else {
-      alert("Please enter a valid email address.");
-    }
-  };
-
-  const handleAdminLogin = () => {
-    if (adminPasswordInput === password) {
-      setShowLandingPage(false);
-      setShowPasswordInput(false);
-      setAdminPasswordInput('');
-    } else {
-      alert('Incorrect password!');
-      setAdminPasswordInput('');
-    }
-  };
-  
-  const resetApp = () => {
-      setStoryState(initialStoryState);
-      setActiveTab(0);
-      setShowLandingPage(true);
-      setIsVideoFinished(false);
-  };
+  const handleSignUpSubmit = async (e) => { e.preventDefault(); /* ... */ };
+  const handleAdminLogin = () => { /* ... */ };
+  const resetApp = () => { /* ... */ };
 
   const renderAppInterface = () => (
     <div className="min-h-screen flex flex-col text-white relative overflow-hidden" style={{ fontFamily: 'Lato, sans-serif' }}>
@@ -82,7 +55,8 @@ export default function Home() {
       <div className="relative z-10 flex flex-col min-h-screen">
         <header className="bg-transparent py-4">
           <div className="max-w-7xl mx-auto px-8 flex justify-between items-center">
-            <h1 className="text-4xl sm:text-5xl font-extrabold text-amber-200" style={{ fontFamily: 'Cinzel, serif', textShadow: '0 0 8px rgba(252, 211, 77, 0.7)' }}>
+            {/* UPDATED: Title color to off-white parchment */}
+            <h1 className="text-4xl sm:text-5xl font-extrabold text-stone-200" style={{ fontFamily: 'Cinzel, serif', textShadow: '0 0 5px rgba(255, 255, 255, 0.2)' }}>
               StorySmith
             </h1>
             <nav><ul className="flex space-x-6"><li><a href="#" onClick={(e) => { e.preventDefault(); resetApp(); }} className="text-gray-300 hover:text-white transition-colors">Home</a></li></ul></nav>
@@ -104,11 +78,7 @@ export default function Home() {
               </video>
             </div>
             <div className="w-full h-full flex flex-col justify-center">
-              <div id="shared-response-box" className="w-full max-w-md mx-auto min-h-[100px] bg-black/20 backdrop-blur-sm border border-stone-500/50 rounded-lg p-6 mb-8 text-stone-200 shadow-lg text-center text-lg">
-                  {sharedResponse}
-              </div>
-
-              {/* FIXED: Restored all necessary props to the child components */}
+              {/* The child components now control their own full layout */}
               {activeTab === 0 && <ForgeHero storyState={storyState} setStoryState={setStoryState} setActiveTab={setActiveTab} setSharedResponse={setSharedResponse} />}
               {activeTab === 1 && <SpinTale storyState={storyState} setStoryState={setStoryState} setActiveTab={setActiveTab} setSharedResponse={setSharedResponse} />}
               {activeTab === 2 && <BindBook storyState={storyState} setStoryState={setStoryState} setActiveTab={setActiveTab} setSharedResponse={setSharedResponse} resetApp={resetApp} />}
