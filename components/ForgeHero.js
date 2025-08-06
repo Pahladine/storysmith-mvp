@@ -91,6 +91,9 @@ export default function ForgeHero({
     const { name, age, gender, traits, wardrobe, signatureItem } = details;
     let prompt = `${name || 'A young hero'}, a ${age || '7'}-year-old ${gender || 'child'} with ${traits || 'brave and curious'} traits, wearing ${wardrobe || 'a simple tunic and sturdy boots'}, holding ${signatureItem || 'a magical locket'}.`;
     prompt += " Style: 3D animated Film, Consistency Tag: whimsical_fantasy_child, Format: full body, front-facing. Lighting: soft cinematic. Rendered as a 3D animated film.";
+    // Add negative prompts to prevent unwanted text.
+    let negativePrompt = " no text, no captions, no writing, no labels, no words";
+    prompt += negativePrompt;
     return prompt;
   };
   
