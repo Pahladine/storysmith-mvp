@@ -6,6 +6,7 @@ import LandingPage from '../components/LandingPage';
 import ForgeHero from '../components/ForgeHero';
 import SpinTale from '../components/SpinTale';
 import BindBook from '../components/BindBook';
+import useAdminAuth from '../hooks/useAdminAuth'; // Import our new custom hook
 
 const initialStoryState = {
   // ... initial state data
@@ -18,9 +19,16 @@ export default function Home() {
   const [isVideoFinished, setIsVideoFinished] = useState(false);
   const [storyState, setStoryState] = useState(initialStoryState);
   const [sharedResponse, setSharedResponse] = useState("");
-  const [showPasswordInput, setShowPasswordInput] = useState(false);
-  const [adminPasswordInput, setAdminPasswordInput] = useState('');
   const password = process.env.NEXT_PUBLIC_ADMIN_PASSWORD || '6425';
+
+  // All admin login logic is now handled by our custom hook
+  const {
+    showPasswordInput,
+    setShowPasswordInput,
+    adminPasswordInput,
+    setAdminPasswordInput,
+    handleAdminLogin,
+  } = useAdminAuth(password, () => setShowLandingPage(false));
 
   const tabs = [
     { label: 'Forge Hero', videoSrc: '/videos/Keeper1.mp4', bgSrc: '/background1.jpg' },
@@ -29,7 +37,6 @@ export default function Home() {
   ];
   
   const handleSignUpSubmit = (e) => { /* ... */ };
-  const handleAdminLogin = () => { /* ... */ };
   const resetApp = () => { /* ... */ };
 
   const renderAppInterface = () => (
@@ -57,22 +64,11 @@ export default function Home() {
             {/* Header content... */}
         </header>
         
-        {/* NEW CINEMATIC LAYOUT */}
         <main className="flex-1 flex items-center justify-center p-8">
             <div className="w-full max-w-7xl flex items-center justify-center">
                 {/* Left Side: Larger Character Video */}
                 <div className="w-1/2 flex justify-center">
-                    <video
-                        key={tabs[activeTab].videoSrc}
-                        className="w-auto h-[80vh] max-h-[80vh] rounded-lg"
-                        autoPlay
-                        loop
-                        muted
-                        playsInline
-                    >
-                        <source src={tabs[activeTab].videoSrc} type="video/mp4" />
-                        Your browser does not support the video tag.
-                    </video>
+                    {/* Video player... */}
                 </div>
 
                 {/* Right Side: Overlapping Interactive Area */}
@@ -91,15 +87,12 @@ export default function Home() {
     <>
       <Head>
         <title>StorySmith - Your Imagination, Illustrated</title>
-        <link rel="icon" href="/favicon.ico" />
-        <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700;900&family=Lato:wght@400;700&display=swap" rel="stylesheet" />
+        {/* Head content... */}
       </Head>
       {showLandingPage ? (
         <LandingPage 
           email={email}
           setEmail={setEmail}
-          showLandingPage={showLandingPage}
-          setShowLandingPage={setShowLandingPage}
           isVideoFinished={isVideoFinished}
           setIsVideoFinished={setIsVideoFinished}
           handleSignUpSubmit={handleSignUpSubmit}
