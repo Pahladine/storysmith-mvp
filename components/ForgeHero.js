@@ -74,7 +74,7 @@ export default function ForgeHero({
       }
 
       const data = await response.json();
-      setGeneratedName(data.name); // Set the generated name in a new state variable
+      setGeneratedName(data.name);
       setSharedResponse(`Behold! The hero's name is ${data.name}! Do you approve?`);
     } catch (error) {
       console.error("Name generation failed:", error);
@@ -147,14 +147,17 @@ export default function ForgeHero({
             }
         }
     }));
-    setActiveTab(1); // Move to the next tab (Spin Tale)
-    setSharedResponse("An excellent choice! Let us now lay the groundwork for this grand adventure!");
+    
+    // Set the transition message before changing the tab
+    setSharedResponse("🎉 Your hero is forged! The first chapter of creation is complete! 🎉");
+    setTimeout(() => {
+      setActiveTab(1); // Move to the next tab (Spin Tale)
+    }, 1500); // Wait 1.5 seconds for the message to be read
   };
   
   const choiceButtonStyle = "w-full text-left p-4 bg-black/10 border border-black/20 rounded-lg text-stone-800 hover:bg-black/20 transition-all duration-300 shadow-sm font-semibold disabled:opacity-50 disabled:cursor-not-allowed";
   
   const renderConversationalForm = () => {
-    // If a name has been generated, show the confirmation screen
     if (generatedName) {
       return (
         <div className="flex flex-col items-center space-y-4">
