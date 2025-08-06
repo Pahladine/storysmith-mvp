@@ -5,7 +5,7 @@ import Head from 'next/head';
 import LandingPage from '../components/LandingPage';
 import ForgeHero from '../components/ForgeHero';
 import SpinTale from '../components/SpinTale';
-import BindBook, { LedgerContent } from '../components/BindBook';
+import BindBook from '../components/BindBook'; // Removed LedgerContent as it's now internal to BindBook
 
 const initialStoryState = {
   metadata: {},
@@ -21,6 +21,9 @@ export default function Home() {
   const [isVideoFinished, setIsVideoFinished] = useState(false);
   const [storyState, setStoryState] = useState(initialStoryState);
   const [sharedResponse, setSharedResponse] = useState("");
+  const [showPasswordInput, setShowPasswordInput] = useState(false);
+  const [adminPasswordInput, setAdminPasswordInput] = useState('');
+  const password = process.env.NEXT_PUBLIC_ADMIN_PASSWORD || '6425';
 
   const tabs = [
     { label: 'Forge Hero', videoSrc: '/videos/Keeper1.mp4', bgSrc: '/background1.jpg' },
@@ -28,9 +31,33 @@ export default function Home() {
     { label: 'Bind Book', videoSrc: '/videos/Keeper3.mp4', bgSrc: '/background3.jpg' },
   ];
   
-  const handleSignUpSubmit = async (e) => { e.preventDefault(); /* ... */ };
-  const handleAdminLogin = () => { /* ... */ };
-  const resetApp = () => { /* ... */ };
+  const handleSignUpSubmit = (e) => {
+    e.preventDefault();
+    if (email && email.includes('@')) {
+      alert(`Thank you for signing up, ${email}!`);
+      setEmail('');
+    } else {
+      alert("Please enter a valid email address.");
+    }
+  };
+
+  const handleAdminLogin = () => {
+    if (adminPasswordInput === password) {
+      setShowLandingPage(false);
+      setShowPasswordInput(false);
+      setAdminPasswordInput('');
+    } else {
+      alert('Incorrect password!');
+      setAdminPasswordInput('');
+    }
+  };
+  
+  const resetApp = () => {
+      setStoryState(initialStoryState);
+      setActiveTab(0);
+      setShowLandingPage(true);
+      setIsVideoFinished(false);
+  };
 
   const renderAppInterface = () => (
     <div className="min-h-screen flex flex-col text-white relative overflow-hidden" style={{ fontFamily: 'Lato, sans-serif' }}>
@@ -55,7 +82,6 @@ export default function Home() {
       <div className="relative z-10 flex flex-col min-h-screen">
         <header className="bg-transparent py-4">
           <div className="max-w-7xl mx-auto px-8 flex justify-between items-center">
-            {/* UPDATED: Title color to off-white parchment */}
             <h1 className="text-4xl sm:text-5xl font-extrabold text-stone-200" style={{ fontFamily: 'Cinzel, serif', textShadow: '0 0 5px rgba(255, 255, 255, 0.2)' }}>
               StorySmith
             </h1>
@@ -78,7 +104,6 @@ export default function Home() {
               </video>
             </div>
             <div className="w-full h-full flex flex-col justify-center">
-              {/* The child components now control their own full layout */}
               {activeTab === 0 && <ForgeHero storyState={storyState} setStoryState={setStoryState} setActiveTab={setActiveTab} setSharedResponse={setSharedResponse} />}
               {activeTab === 1 && <SpinTale storyState={storyState} setStoryState={setStoryState} setActiveTab={setActiveTab} setSharedResponse={setSharedResponse} />}
               {activeTab === 2 && <BindBook storyState={storyState} setStoryState={setStoryState} setActiveTab={setActiveTab} setSharedResponse={setSharedResponse} resetApp={resetApp} />}
@@ -95,7 +120,22 @@ export default function Home() {
         <link rel="icon" href="/favicon.ico" />
         <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700;900&family=Lato:wght@400;700&display=swap" rel="stylesheet" />
       </Head>
-      {showLandingPage ? <LandingPage email={email} setEmail={setEmail} showLandingPage={showLandingPage} setShowLandingPage={setShowLandingPage} isVideoFinished={isVideoFinished} setIsVideoFinished={setIsVideoFinished} handleSignUpSubmit={handleSignUpSubmit} showPasswordInput={showPasswordInput} setShowPasswordInput={setShowPasswordInput} adminPasswordInput={adminPasswordInput} setAdminPasswordInput={setAdminPasswordInput} handleAdminLogin={handleAdminLogin} /> : renderAppInterface()}
+      {showLandingPage ? (
+        <LandingPage 
+          email={email}
+          setEmail={setEmail}
+          showLandingPage={showLandingPage}
+          setShowLandingPage={setShowLandingPage}
+          isVideoFinished={isVideoFinished}
+          setIsVideoFinished={setIsVideoFinished}
+          handleSignUpSubmit={handleSignUpSubmit}
+          showPasswordInput={showPasswordInput}
+          setShowPasswordInput={setShowPasswordInput}
+          adminPasswordInput={adminPasswordInput}
+          setAdminPasswordInput={setAdminPasswordInput}
+          handleAdminLogin={handleAdminLogin} 
+        />
+      ) : renderAppInterface()}
     </>
   );
 }
