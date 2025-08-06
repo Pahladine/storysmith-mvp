@@ -90,7 +90,7 @@ export default function Home() {
             <div className="w-full h-full flex items-center justify-center">
               <video
                 key={tabs[activeTab].videoSrc} // The key prop forces the video to re-render on change
-                className="w-full max-w-md h-auto rounded-lg shadow-2xl"
+                className="w-full h-full object-cover max-w-md rounded-lg shadow-2xl"
                 autoPlay
                 loop
                 muted
