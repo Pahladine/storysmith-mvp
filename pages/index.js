@@ -9,7 +9,10 @@ import BindBook from '../components/BindBook';
 import useAdminAuth from '../hooks/useAdminAuth';
 
 const initialStoryState = {
-  // ... initial state data
+  metadata: {},
+  user_info: {},
+  story_data: { story_title: "", thematic_tone: null, visual_style: "3D animated Film", visual_consistency_tag: null },
+  story_content: { CharacterBlock: {}, StoryBlueprintBlock: {}, SceneJSON_array: [], AssetsManifest: { scene_illustration_urls: [], cover_image_url: null, hero_image_url: null }, Cover: {} }
 };
 
 export default function Home() {
@@ -35,8 +38,22 @@ export default function Home() {
     { label: 'Bind Book', videoSrc: '/videos/Keeper3.mp4', bgSrc: '/background3.jpg' },
   ];
   
-  const handleSignUpSubmit = (e) => { /* ... */ };
-  const resetApp = () => { /* ... */ };
+  const handleSignUpSubmit = (e) => {
+    e.preventDefault();
+    if (email && email.includes('@')) {
+      alert(`Thank you for signing up, ${email}!`);
+      setEmail('');
+    } else {
+      alert("Please enter a valid email address.");
+    }
+  };
+  
+  const resetApp = () => {
+      setStoryState(initialStoryState);
+      setActiveTab(0);
+      setShowLandingPage(true);
+      setIsVideoFinished(false);
+  };
 
   const renderAppInterface = () => (
     <div className="min-h-screen flex flex-col text-white relative overflow-hidden" style={{ fontFamily: 'Lato, sans-serif' }}>
@@ -68,32 +85,28 @@ export default function Home() {
           </div>
         </header>
         
-        {/* ROBUST LAYOUT */}
-        <main className="flex-1 relative flex items-center justify-center">
-            <div className="w-full max-w-screen-2xl mx-auto flex items-center justify-center px-8">
-                {/* Left Side: Video Player */}
-                <div className="w-1/2 flex justify-center pr-8">
-                    <div className="w-full max-w-xl aspect-video relative rounded-2xl shadow-2xl overflow-hidden">
-                        <video
-                            key={tabs[activeTab].videoSrc}
-                            className="absolute top-0 left-0 w-full h-full object-cover"
-                            autoPlay
-                            loop
-                            muted
-                            playsInline
-                        >
-                            <source src={tabs[activeTab].videoSrc} type="video/mp4" />
-                            Your browser does not support the video tag.
-                        </video>
-                    </div>
+        {/* FINAL, ROBUST LAYOUT */}
+        <main className="flex-1 relative">
+            <div className="absolute left-0 top-0 bottom-0 w-1/2 flex items-center justify-center p-8">
+                <div className="w-full h-full relative">
+                    <video
+                        key={tabs[activeTab].videoSrc}
+                        className="absolute top-0 left-0 w-full h-full object-contain"
+                        autoPlay
+                        loop
+                        muted
+                        playsInline
+                    >
+                        <source src={tabs[activeTab].videoSrc} type="video/mp4" />
+                        Your browser does not support the video tag.
+                    </video>
                 </div>
+            </div>
 
-                {/* Right Side: Interactive Area */}
-                <div className="w-1/2 flex justify-center pl-8">
-                    {activeTab === 0 && <ForgeHero storyState={storyState} setStoryState={setStoryState} setActiveTab={setActiveTab} setSharedResponse={setSharedResponse} sharedResponse={sharedResponse} />}
-                    {activeTab === 1 && <SpinTale storyState={storyState} setStoryState={setStoryState} setActiveTab={setActiveTab} setSharedResponse={setSharedResponse} />}
-                    {activeTab === 2 && <BindBook storyState={storyState} setStoryState={setStoryState} setActiveTab={setActiveTab} setSharedResponse={setSharedResponse} resetApp={resetApp} />}
-                </div>
+            <div className="absolute right-0 top-0 bottom-0 w-1/2 flex items-center justify-center p-8">
+                {activeTab === 0 && <ForgeHero storyState={storyState} setStoryState={setStoryState} setActiveTab={setActiveTab} setSharedResponse={setSharedResponse} sharedResponse={sharedResponse} />}
+                {activeTab === 1 && <SpinTale storyState={storyState} setStoryState={setStoryState} setActiveTab={setActiveTab} setSharedResponse={setSharedResponse} />}
+                {activeTab === 2 && <BindBook storyState={storyState} setStoryState={setStoryState} setActiveTab={setActiveTab} setSharedResponse={setSharedResponse} resetApp={resetApp} />}
             </div>
         </main>
       </div>
