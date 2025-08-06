@@ -83,23 +83,21 @@ export default function Home() {
           </div>
         </header>
         
-        <main className="flex-1 grid grid-cols-1 md:grid-cols-2 gap-8 items-stretch p-8">
-            <div className="w-full flex justify-center items-center">
-                <div className="relative w-full h-full rounded-2xl shadow-2xl overflow-hidden">
-                    <video
-                        key={tabs[activeTab].videoSrc}
-                        className="absolute top-0 left-0 w-full h-full object-cover"
-                        autoPlay
-                        loop
-                        muted
-                        playsInline
-                    >
-                        <source src={tabs[activeTab].videoSrc} type="video/mp4" />
-                        Your browser does not support the video tag.
-                    </video>
-                </div>
+        <main className="flex-1 flex flex-col md:flex-row gap-8 items-stretch p-8">
+            <div className="relative w-full md:w-1/2 h-auto md:h-full rounded-2xl shadow-2xl overflow-hidden">
+                <video
+                    key={tabs[activeTab].videoSrc}
+                    className="absolute top-0 left-0 w-full h-full object-cover"
+                    autoPlay
+                    loop
+                    muted
+                    playsInline
+                >
+                    <source src={tabs[activeTab].videoSrc} type="video/mp4" />
+                    Your browser does not support the video tag.
+                </video>
             </div>
-            <div className="w-full h-full flex justify-center items-center">
+            <div className="w-full md:w-1/2 h-full flex justify-center items-center">
                 {activeTab === 0 && <ForgeHero storyState={storyState} setStoryState={setStoryState} setActiveTab={setActiveTab} setSharedResponse={setSharedResponse} sharedResponse={sharedResponse} />}
                 {activeTab === 1 && <SpinTale storyState={storyState} setStoryState={setStoryState} setActiveTab={setActiveTab} setSharedResponse={setSharedResponse} />}
                 {activeTab === 2 && <BindBook storyState={storyState} setStoryState={setStoryState} setActiveTab={setActiveTab} setSharedResponse={setSharedResponse} resetApp={resetApp} />}
