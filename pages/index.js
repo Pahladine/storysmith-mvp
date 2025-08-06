@@ -6,7 +6,7 @@ import LandingPage from '../components/LandingPage';
 import ForgeHero from '../components/ForgeHero';
 import SpinTale from '../components/SpinTale';
 import BindBook from '../components/BindBook';
-import useAdminAuth from '../hooks/useAdminAuth'; // Import our new custom hook
+import useAdminAuth from '../hooks/useAdminAuth';
 
 const initialStoryState = {
   // ... initial state data
@@ -21,7 +21,6 @@ export default function Home() {
   const [sharedResponse, setSharedResponse] = useState("");
   const password = process.env.NEXT_PUBLIC_ADMIN_PASSWORD || '6425';
 
-  // All admin login logic is now handled by our custom hook
   const {
     showPasswordInput,
     setShowPasswordInput,
@@ -61,14 +60,30 @@ export default function Home() {
       
       <div className="relative z-10 flex flex-col min-h-screen">
         <header className="bg-transparent py-4">
-            {/* Header content... */}
+          <div className="max-w-7xl mx-auto px-8 flex justify-between items-center">
+            <h1 className="text-4xl sm:text-5xl font-extrabold text-stone-200" style={{ fontFamily: 'Cinzel, serif', textShadow: '0 0 5px rgba(255, 255, 255, 0.2)' }}>
+              StorySmith
+            </h1>
+            <nav><ul className="flex space-x-6"><li><a href="#" onClick={(e) => { e.preventDefault(); resetApp(); }} className="text-gray-300 hover:text-white transition-colors">Home</a></li></ul></nav>
+          </div>
         </header>
         
         <main className="flex-1 flex items-center justify-center p-8">
             <div className="w-full max-w-7xl flex items-center justify-center">
                 {/* Left Side: Larger Character Video */}
                 <div className="w-1/2 flex justify-center">
-                    {/* Video player... */}
+                    {/* FIXED: Restored the video player code */}
+                    <video
+                        key={tabs[activeTab].videoSrc}
+                        className="w-auto h-[80vh] max-h-[80vh] rounded-lg"
+                        autoPlay
+                        loop
+                        muted
+                        playsInline
+                    >
+                        <source src={tabs[activeTab].videoSrc} type="video/mp4" />
+                        Your browser does not support the video tag.
+                    </video>
                 </div>
 
                 {/* Right Side: Overlapping Interactive Area */}
