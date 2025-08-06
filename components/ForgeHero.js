@@ -17,7 +17,9 @@ export default function ForgeHero({
   const [userProvidedAge, setUserProvidedAge] = useState('');
   
   const [heroDetails, setHeroDetails] = useState({
-    type: '', name: '', age: '', gender: '', traits: 'brave and kind', wardrobe: '', signatureItem: '', photoFile: null,
+    type: '', name: '', age: '', gender:git add .
+git commit -m "script fix2"
+git push '', traits: 'brave and kind', wardrobe: '', signatureItem: '', photoFile: null,
   });
 
   const {
