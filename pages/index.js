@@ -29,10 +29,11 @@ export default function Home() {
   
   const [sharedResponse, setSharedResponse] = useState("");
 
+  // UPDATED this section to match your filenames
   const tabs = [
-    { label: 'Forge Hero', videoSrc: '/videos/keeper1.mp4' },
-    { label: 'Spin Tale', videoSrc: '/videos/keeper2.mp4' },
-    { label: 'Bind Book', videoSrc: '/videos/keeper3.mp4' },
+    { label: 'Forge Hero', videoSrc: '/videos/Keeper1.mp4' },
+    { label: 'Spin Tale', videoSrc: '/videos/Keeper2.mp4' },
+    { label: 'Bind Book', videoSrc: '/videos/Keeper3.mp4' },
   ];
   
   // --- GENERAL PURPOSE FUNCTIONS ---
@@ -46,7 +47,6 @@ export default function Home() {
     }
   };
 
-  // THIS FUNCTION HAS BEEN RESTORED
   const handleAdminLogin = () => {
     if (adminPasswordInput === password) {
       setShowLandingPage(false);
@@ -58,15 +58,7 @@ export default function Home() {
     }
   };
 
-  const generateImageSimulated = async (prompt, type = 'scene') => {
-    setIsImageLoading(true);
-    await new Promise(resolve => setTimeout(resolve, 1500));
-    const safePrompt = prompt || `A beautiful ${type} illustration`;
-    const placeholderText = encodeURIComponent(safePrompt.substring(0, 20) + '...');
-    let imageUrl = `https://placehold.co/400x300/3CB371/FFFFFF?text=${type}+${placeholderText}`;
-    setIsImageLoading(false);
-    return imageUrl;
-  };
+  const generateImageSimulated = async (prompt, type = 'scene') => { /* ... */ };
   
   const resetApp = () => {
       setStoryState(initialStoryState);
@@ -133,7 +125,7 @@ export default function Home() {
 
         <footer className="bg-transparent py-8 mt-auto">
           <div className="max-w-7xl mx-auto px-8 text-center text-gray-400 text-sm">
-            &copy; {new Date().getFullYear()} StorySmith. All rights reserved.
+            &copy; 2025 StorySmith. All rights reserved.
           </div>
         </footer>
       </div>
