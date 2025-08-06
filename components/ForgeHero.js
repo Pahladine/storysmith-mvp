@@ -17,9 +17,7 @@ export default function ForgeHero({
   const [userProvidedAge, setUserProvidedAge] = useState('');
   
   const [heroDetails, setHeroDetails] = useState({
-    type: '', name: '', age: '', gender:git add .
-git commit -m "script fix2"
-git push '', traits: 'brave and kind', wardrobe: '', signatureItem: '', photoFile: null,
+    type: '', name: '', age: '', gender: '', traits: 'brave and kind', wardrobe: '', signatureItem: '', photoFile: null,
   });
 
   const {
@@ -177,7 +175,6 @@ git push '', traits: 'brave and kind', wardrobe: '', signatureItem: '', photoFil
             </div>
         );
     } else if (currentQuestion === 'name') {
-        // This block handles the initial 'name' question, which was the bug.
         setSharedResponse(conversation.name.question);
         const gridClass = conversation.name.choices.some(c => c.gridCols) ? 'grid grid-cols-2 gap-4' : 'flex flex-col items-center space-y-4';
         return (
