@@ -33,8 +33,8 @@ export default function ForgeHero({
     // Simulate an API call delay
     await new Promise(resolve => setTimeout(resolve, 2000));
     
-    // TEMPORARY: Set a placeholder image and a success message
-    const placeholderUrl = "https://via.placeholder.com/600x600?text=Hero+Image+Generated!";
+    // UPDATED: Set a more reliable placeholder image URL
+    const placeholderUrl = "https://placehold.co/600x600/png"; 
     setHeroImageUrl(placeholderUrl);
     setSharedResponse("Behold, your hero’s face shines with living light!");
 
