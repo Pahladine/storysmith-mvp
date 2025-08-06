@@ -11,6 +11,7 @@ export default function ForgeHero({
   sharedResponse,
 }) {
   const [isImageLoading_local, setIsImageLoading_local] = useState(false);
+  const [isNameLoading, setIsNameLoading] = useState(false);
   const [currentForgeHeroStep, setCurrentForgeHeroStep] = useState(0);
   const [currentQuestion, setCurrentQuestion] = useState('start');
   const [userProvidedName, setUserProvidedName] = useState('');
@@ -57,6 +58,31 @@ export default function ForgeHero({
     }
   };
   
+  const generateAIName = async (type) => {
+    setIsNameLoading(true);
+    setSharedResponse("By the power of starlight, a name is born!");
+    
+    try {
+      const response = await fetch('/api/generateName', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ type, gender: heroDetails.gender }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Name generation failed.');
+      }
+
+      const data = await response.json();
+      handleQuestionAnswer('name', data.name, 'age');
+    } catch (error) {
+      console.error("Name generation failed:", error);
+      setSharedResponse("The magical winds are silent. An error occurred.");
+    } finally {
+      setIsNameLoading(false);
+    }
+  };
+
   const handlePhotoFileChange = async (event) => { /* ... */ };
 
   const handleHeroTypeSelection = (type) => {
@@ -135,6 +161,9 @@ export default function ForgeHero({
                         className={`${choiceButtonStyle} ${choice.gridCols ? `col-span-${choice.gridCols}` : ''}`} 
                         onClick={() => {
                             if (choice.action) {
+                                if (choice.action === 'ai_whimsical' || choice.action === 'ai_surprise') {
+                                    generateAIName(choice.action.split('_')[1]); // Pass 'whimsical' or 'surprise'
+                                }
                                 setCurrentQuestion(choice.action);
                             } else {
                                 handleQuestionAnswer(choice.field, choice.value, choice.next);
@@ -146,6 +175,14 @@ export default function ForgeHero({
                 ))}
             </div>
         );
+    }
+    
+    // Now, let's handle the specific name generation cases with a loading state
+    if (isNameLoading) {
+      setSharedResponse("By the power of starlight, a name is born!");
+      return (
+        <div className="flex justify-center items-center h-[200px]"><div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-stone-400"></div></div>
+      );
     }
 
     switch (currentQuestion) {
@@ -174,24 +211,6 @@ export default function ForgeHero({
                     {isImageLoading_local ? 'Forging Hero...' : 'Forge My Hero!'}
                 </button>
             </div>
-        );
-      case 'ai_whimsical':
-        setSharedResponse("By the power of starlight, a name is born!");
-        // We'll simulate a name generation here and move on.
-        setTimeout(() => {
-          handleQuestionAnswer('name', 'Whimsicap', 'age');
-        }, 1000);
-        return (
-          <div className="flex justify-center items-center h-[200px]"><div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-stone-400"></div></div>
-        );
-      case 'ai_surprise':
-        setSharedResponse("A name, chosen by fate!");
-        // We'll simulate a name generation here and move on.
-        setTimeout(() => {
-          handleQuestionAnswer('name', 'Starlight', 'age');
-        }, 1000);
-        return (
-          <div className="flex justify-center items-center h-[200px]"><div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-stone-400"></div></div>
         );
       default:
         return null;
