@@ -36,10 +36,44 @@ export default function Home() {
   ];
   
   // --- GENERAL PURPOSE FUNCTIONS ---
-  const handleSignUpSubmit = async (e) => { e.preventDefault(); /* ... */ };
-  const handleAdminLogin = () => { /* ... */ };
-  const generateImageSimulated = async (prompt, type = 'scene') => { /* ... */ };
-  const resetApp = () => { /* ... */ };
+  const handleSignUpSubmit = async (e) => {
+    e.preventDefault();
+    if (email && email.includes('@')) {
+      alert(`Thank you for signing up, ${email}!`);
+      setEmail('');
+    } else {
+      alert("Please enter a valid email address.");
+    }
+  };
+
+  // THIS FUNCTION HAS BEEN RESTORED
+  const handleAdminLogin = () => {
+    if (adminPasswordInput === password) {
+      setShowLandingPage(false);
+      setShowPasswordInput(false);
+      setAdminPasswordInput('');
+    } else {
+      alert('Incorrect password!');
+      setAdminPasswordInput('');
+    }
+  };
+
+  const generateImageSimulated = async (prompt, type = 'scene') => {
+    setIsImageLoading(true);
+    await new Promise(resolve => setTimeout(resolve, 1500));
+    const safePrompt = prompt || `A beautiful ${type} illustration`;
+    const placeholderText = encodeURIComponent(safePrompt.substring(0, 20) + '...');
+    let imageUrl = `https://placehold.co/400x300/3CB371/FFFFFF?text=${type}+${placeholderText}`;
+    setIsImageLoading(false);
+    return imageUrl;
+  };
+  
+  const resetApp = () => {
+      setStoryState(initialStoryState);
+      setActiveTab(0);
+      setShowLandingPage(true);
+      setIsVideoFinished(false);
+  };
 
   // --- RENDER LOGIC ---
   const renderAppInterface = () => (
