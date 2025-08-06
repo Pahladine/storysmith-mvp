@@ -60,7 +60,7 @@ export default function Home() {
       
       <div className="relative z-10 flex flex-col min-h-screen">
         <header className="bg-transparent py-4">
-          <div className="max-w-7xl mx-auto px-8 flex justify-between items-center">
+          <div className="max-w-screen-2xl mx-auto px-8 flex justify-between items-center">
             <h1 className="text-4xl sm:text-5xl font-extrabold text-stone-200" style={{ fontFamily: 'Cinzel, serif', textShadow: '0 0 5px rgba(255, 255, 255, 0.2)' }}>
               StorySmith
             </h1>
@@ -68,28 +68,32 @@ export default function Home() {
           </div>
         </header>
         
-        {/* NEW, MORE ROBUST LAYOUT */}
-        <main className="flex-1 relative">
-            {/* The video now has a clearly defined space */}
-            <div className="absolute left-0 top-0 h-full w-1/2 flex items-center justify-center p-8">
-                <video
-                    key={tabs[activeTab].videoSrc}
-                    className="w-full h-full object-cover rounded-2xl shadow-2xl"
-                    autoPlay
-                    loop
-                    muted
-                    playsInline
-                >
-                    <source src={tabs[activeTab].videoSrc} type="video/mp4" />
-                    Your browser does not support the video tag.
-                </video>
-            </div>
+        {/* ROBUST LAYOUT */}
+        <main className="flex-1 relative flex items-center justify-center">
+            <div className="w-full max-w-screen-2xl mx-auto flex items-center justify-center px-8">
+                {/* Left Side: Video Player */}
+                <div className="w-1/2 flex justify-center pr-8">
+                    <div className="w-full max-w-xl aspect-video relative rounded-2xl shadow-2xl overflow-hidden">
+                        <video
+                            key={tabs[activeTab].videoSrc}
+                            className="absolute top-0 left-0 w-full h-full object-cover"
+                            autoPlay
+                            loop
+                            muted
+                            playsInline
+                        >
+                            <source src={tabs[activeTab].videoSrc} type="video/mp4" />
+                            Your browser does not support the video tag.
+                        </video>
+                    </div>
+                </div>
 
-            {/* The interactive area also has a clearly defined space */}
-            <div className="absolute right-0 top-0 h-full w-1/2 flex items-center justify-center p-8">
-                {activeTab === 0 && <ForgeHero storyState={storyState} setStoryState={setStoryState} setActiveTab={setActiveTab} setSharedResponse={setSharedResponse} sharedResponse={sharedResponse} />}
-                {activeTab === 1 && <SpinTale storyState={storyState} setStoryState={setStoryState} setActiveTab={setActiveTab} setSharedResponse={setSharedResponse} />}
-                {activeTab === 2 && <BindBook storyState={storyState} setStoryState={setStoryState} setActiveTab={setActiveTab} setSharedResponse={setSharedResponse} resetApp={resetApp} />}
+                {/* Right Side: Interactive Area */}
+                <div className="w-1/2 flex justify-center pl-8">
+                    {activeTab === 0 && <ForgeHero storyState={storyState} setStoryState={setStoryState} setActiveTab={setActiveTab} setSharedResponse={setSharedResponse} sharedResponse={sharedResponse} />}
+                    {activeTab === 1 && <SpinTale storyState={storyState} setStoryState={setStoryState} setActiveTab={setActiveTab} setSharedResponse={setSharedResponse} />}
+                    {activeTab === 2 && <BindBook storyState={storyState} setStoryState={setStoryState} setActiveTab={setActiveTab} setSharedResponse={setSharedResponse} resetApp={resetApp} />}
+                </div>
             </div>
         </main>
       </div>
