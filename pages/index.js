@@ -21,6 +21,10 @@ export default function Home() {
   const [activeTab, setActiveTab] = useState(0);
   const [isVideoFinished, setIsVideoFinished] = useState(false);
   const [storyState, setStoryState] = useState(initialStoryState);
+  const [showPasswordInput, setShowPasswordInput] = useState(false);
+  const [adminPasswordInput, setAdminPasswordInput] = useState('');
+  const password = process.env.NEXT_PUBLIC_ADMIN_PASSWORD || '6425';
+  
   const [sharedResponse, setSharedResponse] = useState("");
 
   const tabs = [
@@ -30,9 +34,33 @@ export default function Home() {
   ];
   
   // --- GENERAL PURPOSE FUNCTIONS ---
-  const handleSignUpSubmit = async (e) => { e.preventDefault(); /* ... */ };
-  const handleAdminLogin = () => { /* ... */ };
-  const resetApp = () => { /* ... */ };
+  const handleSignUpSubmit = async (e) => {
+    e.preventDefault();
+    if (email && email.includes('@')) {
+      alert(`Thank you for signing up, ${email}!`);
+      setEmail('');
+    } else {
+      alert("Please enter a valid email address.");
+    }
+  };
+
+  const handleAdminLogin = () => {
+    if (adminPasswordInput === password) {
+      setShowLandingPage(false);
+      setShowPasswordInput(false);
+      setAdminPasswordInput('');
+    } else {
+      alert('Incorrect password!');
+      setAdminPasswordInput('');
+    }
+  };
+  
+  const resetApp = () => {
+      setStoryState(initialStoryState);
+      setActiveTab(0);
+      setShowLandingPage(true);
+      setIsVideoFinished(false);
+  };
 
   // --- RENDER LOGIC ---
   const renderAppInterface = () => (
@@ -87,10 +115,10 @@ export default function Home() {
                   {sharedResponse}
               </div>
 
-              {/* The components will now render inside this container */}
-              {activeTab === 0 && <ForgeHero setSharedResponse={setSharedResponse} />}
-              {activeTab === 1 && <SpinTale setSharedResponse={setSharedResponse} />}
-              {activeTab === 2 && <BindBook setSharedResponse={setSharedResponse} resetApp={resetApp} />}
+              {/* RESTORED: Props are now passed to child components */}
+              {activeTab === 0 && <ForgeHero storyState={storyState} setStoryState={setStoryState} setActiveTab={setActiveTab} setSharedResponse={setSharedResponse} />}
+              {activeTab === 1 && <SpinTale storyState={storyState} setStoryState={setStoryState} setActiveTab={setActiveTab} setSharedResponse={setSharedResponse} />}
+              {activeTab === 2 && <BindBook storyState={storyState} setStoryState={setStoryState} setActiveTab={setActiveTab} setSharedResponse={setSharedResponse} resetApp={resetApp} />}
             </div>
         </main>
       </div>
@@ -104,7 +132,8 @@ export default function Home() {
         <link rel="icon" href="/favicon.ico" />
         <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700;900&family=Lato:wght@400;700&display=swap" rel="stylesheet" />
       </Head>
-      {showLandingPage ? <LandingPage email={email} setEmail={setEmail} showLandingPage={showLandingPage} setShowLandingPage={setShowLandingPage} isVideoFinished={isVideoFinished} setIsVideoFinished={setIsVideoFinished} handleSignUpSubmit={handleSignUpSubmit} showPasswordInput={showPasswordInput} setShowPasswordInput={setShowPasswordInput} adminPasswordInput={adminPasswordInput} setAdminPasswordInput={setAdminPasswordInput} handleAdminLogin={handleAdminLogin} /> : <div />}
+      {/* RESTORED: renderAppInterface() call */}
+      {showLandingPage ? <LandingPage email={email} setEmail={setEmail} showLandingPage={showLandingPage} setShowLandingPage={setShowLandingPage} isVideoFinished={isVideoFinished} setIsVideoFinished={setIsVideoFinished} handleSignUpSubmit={handleSignUpSubmit} showPasswordInput={showPasswordInput} setShowPasswordInput={setShowPasswordInput} adminPasswordInput={adminPasswordInput} setAdminPasswordInput={setAdminPasswordInput} handleAdminLogin={handleAdminLogin} /> : renderAppInterface()}
     </>
   );
 }
