@@ -9,7 +9,15 @@ import BindBook from '../components/BindBook';
 import useAdminAuth from '../hooks/useAdminAuth';
 
 const initialStoryState = {
-  // ... initial state data
+  story_content: {
+    CharacterBlock: null,
+    StoryBlueprintBlock: null,
+    SceneJSON_array: [],
+    Cover: null,
+  },
+  story_data: {
+    visual_style: "3D animated Film",
+  },
 };
 
 export default function Home() {
@@ -37,7 +45,13 @@ export default function Home() {
   ];
   
   const handleSignUpSubmit = (e) => { /* ... */ };
-  const resetApp = () => { /* ... */ };
+  
+  const resetApp = () => {
+    setStoryState(initialStoryState);
+    setActiveTab(0);
+    setShowLandingPage(true);
+    setSharedResponse("");
+  };
 
   const renderAppInterface = () => (
     <div className="min-h-screen flex flex-col text-white relative overflow-hidden" style={{ fontFamily: 'Lato, sans-serif' }}>
@@ -70,8 +84,8 @@ export default function Home() {
         </header>
         
         <main className="flex-1 grid grid-cols-1 md:grid-cols-2 gap-8 items-center p-8">
-            <div className="w-full flex justify-center items-center">
-                <div className="w-full max-w-xl aspect-video relative rounded-2xl shadow-2xl overflow-hidden">
+            <div className="w-full h-full flex justify-center items-center">
+                <div className="w-full max-w-full aspect-video md:aspect-auto md:h-full relative rounded-2xl shadow-2xl overflow-hidden">
                     <video
                         key={tabs[activeTab].videoSrc}
                         className="absolute top-0 left-0 w-full h-full object-cover"
