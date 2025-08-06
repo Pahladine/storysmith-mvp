@@ -83,8 +83,8 @@ export default function Home() {
           </div>
         </header>
         
-        <main className="flex-1 flex flex-col md:flex-row gap-8 items-stretch p-8 min-h-0">
-            <div className="relative flex-grow w-full md:w-1/2 h-full rounded-2xl shadow-2xl overflow-hidden">
+        <main className="flex-1 flex flex-col md:flex-row gap-8 items-stretch p-8">
+            <div className="relative flex-grow w-full md:w-1/2 min-h-0 rounded-2xl shadow-2xl overflow-hidden">
                 <video
                     key={tabs[activeTab].videoSrc}
                     className="absolute top-0 left-0 w-full h-full object-cover"
@@ -97,7 +97,7 @@ export default function Home() {
                     Your browser does not support the video tag.
                 </video>
             </div>
-            <div className="flex-grow w-full md:w-1/2 h-full flex justify-center items-center min-h-0">
+            <div className="flex-grow w-full md:w-1/2 flex justify-center items-center">
                 {activeTab === 0 && <ForgeHero storyState={storyState} setStoryState={setStoryState} setActiveTab={setActiveTab} setSharedResponse={setSharedResponse} />}
                 {activeTab === 1 && <SpinTale storyState={storyState} setStoryState={setStoryState} setActiveTab={setActiveTab} setSharedResponse={setSharedResponse} />}
                 {activeTab === 2 && <BindBook storyState={storyState} setStoryState={setStoryState} setActiveTab={setActiveTab} setSharedResponse={setSharedResponse} resetApp={resetApp} />}
